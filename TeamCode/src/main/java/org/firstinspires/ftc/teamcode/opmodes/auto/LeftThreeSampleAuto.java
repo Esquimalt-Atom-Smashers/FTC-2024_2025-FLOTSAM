@@ -15,6 +15,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.roadrunner.MecanumDrive;
@@ -25,6 +26,7 @@ import org.firstinspires.ftc.teamcode.subsystems.SpecimenArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SpinningWristSubsystem;
 
 @Autonomous(name = "x.LeftThreeSampleAuto", group = "xpirmental Auto")
+@Disabled
 public class LeftThreeSampleAuto extends LinearOpMode {
 
     DriveSubsystem driveSubsystem;

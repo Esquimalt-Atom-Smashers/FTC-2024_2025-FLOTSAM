@@ -70,7 +70,7 @@ public class SpinningWristSubsystem extends SubsystemBase {
     }
 
     public void toPosition(WristPosition position) {
-        if(armSubsystem.getArmPosition() == ArmSubsystem.ArmPosition.INTAKE_POSITION) targetWristPosition = position;
+        targetWristPosition = position;
     }
 
     //Getters
@@ -145,7 +145,7 @@ public class SpinningWristSubsystem extends SubsystemBase {
 
             outtake();
 
-            if(timer.seconds() > 2) {
+            if(timer.seconds() > 0.5) {
                 stopIntakeServo();
                 return false;
             } else return true;

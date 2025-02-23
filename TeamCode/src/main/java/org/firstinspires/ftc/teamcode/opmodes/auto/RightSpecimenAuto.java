@@ -47,7 +47,7 @@ public class RightSpecimenAuto extends LinearOpMode {
 
         TrajectoryActionBuilder scoreSecSpec = preScoreSec.endTrajectory().fresh()
                 .setTangent(0)
-                .splineToLinearHeading(new Pose2d(new Vector2d(-5,30), Math.toRadians(180)), Math.toRadians(270));
+                .splineToLinearHeading(new Pose2d(new Vector2d(-5,29), Math.toRadians(180)), Math.toRadians(270));
 
         TrajectoryActionBuilder moveBack = scoreSecSpec.endTrajectory().fresh()
                 .setTangent(Math.toRadians(90))
@@ -62,7 +62,7 @@ public class RightSpecimenAuto extends LinearOpMode {
 
         TrajectoryActionBuilder scoreThirdSpec = preScoreThird.endTrajectory().fresh()
                 .setTangent(0)
-                .splineToLinearHeading(new Pose2d(new Vector2d(-8,30), Math.toRadians(180)), Math.toRadians(270));
+                .splineToLinearHeading(new Pose2d(new Vector2d(-8,28), Math.toRadians(180)), Math.toRadians(270));
 
         TrajectoryActionBuilder park = scoreThirdSpec.endTrajectory().fresh()
                 .setTangent(Math.toRadians(90))

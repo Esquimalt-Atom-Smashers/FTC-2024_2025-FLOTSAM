@@ -50,70 +50,105 @@ public class LeftSampleAuto extends LinearOpMode {
         waitForStart();
 
         TrajectoryActionBuilder outtakePos1 = drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(53, 58), Math.toRadians(135));
+                .strafeToLinearHeading(new Vector2d(54, 59), Math.toRadians(135));
 
         TrajectoryActionBuilder intakeSamp2 = outtakePos1.endTrajectory().fresh()
                 .strafeToLinearHeading(new Vector2d(45.5, 50), Math.toRadians(180));
 
         TrajectoryActionBuilder outtakePos2 = intakeSamp2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(53, 58), Math.toRadians(135));
+                .strafeToLinearHeading(new Vector2d(54, 59), Math.toRadians(135));
 
         TrajectoryActionBuilder intakeSamp3 = outtakePos2.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(55.5, 50), Math.toRadians(180));
+                .strafeToLinearHeading(new Vector2d(55, 50), Math.toRadians(180));
 
         TrajectoryActionBuilder outtakePos3 = intakeSamp3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(53, 58), Math.toRadians(135));
+                .strafeToLinearHeading(new Vector2d(54, 59), Math.toRadians(135));
 
         TrajectoryActionBuilder intakeSamp4 = outtakePos3.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(42.17, 40.33), Math.toRadians(225));
+                .strafeToLinearHeading(new Vector2d(50, 40.33), Math.toRadians(227));
 
         TrajectoryActionBuilder outtakePos4 = intakeSamp4.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(53, 58), Math.toRadians(135));
+                .strafeToLinearHeading(new Vector2d(54, 59), Math.toRadians(135));
+
+        TrajectoryActionBuilder resetHeading = outtakePos3.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(55, 50), Math.toRadians(180));
 
         Actions.runBlocking(
             new ParallelAction(
                     new SequentialAction(
-                            getGoToHighBasketAction(),
-                            outtakePos1.build(),
-                            new SleepAction(0.5),
+                            new ParallelAction(
+                                    getGoToHighBasketAction(),
+                                    outtakePos1.build()
+                            ),
+                            new SleepAction(0.2),
                             spinningWristSubsystem.getOuttakeAction(),
                     //Second Sample
-                            intakeSamp2.build(),
-                            new InstantAction(() -> commandManager.getToHomePosition().schedule()),
+                            new ParallelAction(
+                                    intakeSamp2.build(),
+                                    new SequentialAction(
+                                            new SleepAction(0.5),
+                                            new InstantAction(() -> commandManager.getToHomePosition().schedule())
+                                    )
+                            ),
                             spinningWristSubsystem.getIntakeAction(),
                             spinningWristSubsystem.getToPositionAction(spinningWristSubsystem, SpinningWristSubsystem.WristPosition.INTAKE),
                             //new SleepAction(1),
-                            new InstantAction(() -> armSubsystem.setLinearMaxPower(0.5)),
-                            armSubsystem.getSlideToPositionAction(armSubsystem, 950),
-                            new SleepAction(1),
-                            getGoToHighBasketAction(),
-                            outtakePos2.build(),
+                            //new InstantAction(() -> armSubsystem.setLinearMaxPower(0.5)),
+                            armSubsystem.getSlideToPositionAction(armSubsystem, 1050),
+                            new SleepAction(0.5),
+                            new ParallelAction(
+                                    getGoToHighBasketAction(),
+                                    outtakePos2.build()
+                            ),
+                            new SleepAction(0.2),
                             spinningWristSubsystem.getOuttakeAction(),
                     //Third Sample
-                            intakeSamp3.build(),
-                            new InstantAction(() -> commandManager.getToHomePosition().schedule()),
+                            new ParallelAction(
+                                    intakeSamp3.build(),
+                                    new SequentialAction(
+                                            new SleepAction(0.5),
+                                            new InstantAction(() -> commandManager.getToHomePosition().schedule())
+                                    )
+                            ),
                             spinningWristSubsystem.getIntakeAction(),
                             spinningWristSubsystem.getToPositionAction(spinningWristSubsystem, SpinningWristSubsystem.WristPosition.INTAKE),
                             //new SleepAction(1),
-                            new InstantAction(() -> armSubsystem.setLinearMaxPower(0.5)),
-                            armSubsystem.getSlideToPositionAction(armSubsystem, 950),
-                            new SleepAction(1),
-                            getGoToHighBasketAction(),
-                            outtakePos3.build(),
+                            //new InstantAction(() -> armSubsystem.setLinearMaxPower(0.5)),
+                            armSubsystem.getSlideToPositionAction(armSubsystem, 1050),
+                            new SleepAction(0.5),
+                            new ParallelAction(
+                                    getGoToHighBasketAction(),
+                                    outtakePos3.build()
+                            ),
+                            new SleepAction(0.2),
                             spinningWristSubsystem.getOuttakeAction(),
                     //Fourth Sample
-                            intakeSamp4.build(),
-                            new InstantAction(() -> commandManager.getToHomePosition().schedule()),
+                            new ParallelAction(
+                                    intakeSamp4.build(),
+                                    new SequentialAction(
+                                            new SleepAction(0.5),
+                                            new InstantAction(() -> commandManager.getToHomePosition().schedule())
+                                    )
+                            ),
                             spinningWristSubsystem.getIntakeAction(),
                             spinningWristSubsystem.getToPositionAction(spinningWristSubsystem, SpinningWristSubsystem.WristPosition.INTAKE),
                             //new SleepAction(1),
-                            new InstantAction(() -> armSubsystem.setLinearMaxPower(0.5)),
-                            armSubsystem.getSlideToPositionAction(armSubsystem, 950),
-                            new SleepAction(1),
-                            getGoToHighBasketAction(),
-                            outtakePos4.build(),
-                            spinningWristSubsystem.getOuttakeAction(),
-                            new InstantAction(() -> commandManager.getToHomePosition().schedule())
+                            //new InstantAction(() -> armSubsystem.setLinearMaxPower(0.5)),
+                            armSubsystem.getSlideToPositionAction(armSubsystem, 900),
+                            new SleepAction(0.5),
+//                            new ParallelAction(
+//                                    getGoToHighBasketAction(),
+//                                    outtakePos4.build()
+//                            ),
+//                            new SleepAction(0.2),
+//                            spinningWristSubsystem.getOuttakeAction(),
+                            new ParallelAction(
+                                    resetHeading.build(),
+                                    new SequentialAction(
+                                            new SleepAction(0.5),
+                                            new InstantAction(() -> commandManager.getToHomePosition().schedule())
+                                    )
+                            )
                             ),
                     new RunFTCLibCommands()
             )
