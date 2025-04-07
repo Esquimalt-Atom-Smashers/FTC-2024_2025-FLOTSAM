@@ -73,7 +73,7 @@ public class DriveSubsystem extends SubsystemBase {
     private int TOLERANCE = 1;
 
     //turning constants
-    private double TURNING_P;
+    private final double TURNING_P = 0.5;
 
     public DriveSubsystem(OpMode opMode) {
         this.opMode = opMode;

@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import java.util.Arrays;
 import java.util.List;
 
-@TeleOp(name="Robot: Auto Drive By Gyro", group="Robot")
+@TeleOp(name="AprilTagTurning", group="Robot")
 public class AprilTagTurning extends LinearOpMode {
     DriveSubsystem driveSubsystem;
     Limelight3A limelight;
