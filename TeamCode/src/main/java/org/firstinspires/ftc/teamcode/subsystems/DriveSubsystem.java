@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.roadrunner.MecanumDrive;
@@ -12,9 +10,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.arcrobotics.ftclib.command.Subsystem;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -30,7 +26,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -76,6 +71,9 @@ public class DriveSubsystem extends SubsystemBase {
     private List<Action> runningActions;
     private Pose2d currentPos;
     private int TOLERANCE = 1;
+
+    //turning constants
+    private double TURNING_P;
 
     public DriveSubsystem(OpMode opMode) {
         this.opMode = opMode;
@@ -187,6 +185,21 @@ public class DriveSubsystem extends SubsystemBase {
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    public void turnTo(double targetHeading){
+        double headingError = targetHeading - getHeading();
+
+        // Normalize the error to be within +/- 180 degrees
+        while (headingError > 180)  headingError -= 360;
+        while (headingError <= -180) headingError += 360;
+
+        turn = Range.clip(headingError * TURNING_P, -1, 1);
+
+        frontLeftMotor.setPower(Range.clip((turn), -1, 1) * speedMultiplier);
+        frontRightMotor.setPower(Range.clip((- turn), -1, 1) * speedMultiplier);
+        backLeftMotor.setPower(Range.clip((turn), -1, 1) * speedMultiplier);
+        backRightMotor.setPower(Range.clip((- turn), -1, 1) * speedMultiplier);
+    }
+
     //Setters
 
     public void setSpeedMultiplier(double multiplier) {
@@ -207,7 +220,7 @@ public class DriveSubsystem extends SubsystemBase {
         return fieldCentric;
     }
 
-    private double getHeading() {
+    public double getHeading() {
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
 
