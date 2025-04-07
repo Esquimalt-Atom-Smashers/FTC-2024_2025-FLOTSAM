@@ -85,8 +85,8 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 1.1;
-        public double lateralGain = 3.0;
+        public double axialGain = 0.55;
+        public double lateralGain = 3.0935;
         public double headingGain = 10.0; // shared with turn
 
         public double axialVelGain = 0.1;
@@ -294,7 +294,7 @@ public final class MecanumDrive {
 
         @Override
         public boolean run(@NonNull TelemetryPacket p) {
-            double correctionTime = 0.5;
+            double correctionTime = 0.0;
             double t;
             if (beginTs < 0) {
                 beginTs = Actions.now();
@@ -303,7 +303,7 @@ public final class MecanumDrive {
                 t = Actions.now() - beginTs;
             }
 
-            if (t >= timeTrajectory.duration+correctionTime) {//added correction time, should add an exception for if it is at position
+            if (t >= timeTrajectory.duration + correctionTime) {//added correction time, should add an exception for if it is at position
                 leftFront.setPower(0);
                 leftBack.setPower(0);
                 rightBack.setPower(0);

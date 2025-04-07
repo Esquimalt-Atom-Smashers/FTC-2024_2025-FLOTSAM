@@ -1,13 +1,15 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.testandtuning;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="FindSlideFeedForward", group = "Real")
+@Disabled
+@TeleOp(name="FindSlideFeedForward", group = "Tuning")
 public class FindSlideFeedForward extends OpMode {
     DcMotorEx slideMotor;
     double powerToMotor = 0;
