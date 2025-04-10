@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import org.firstinspires.ftc.roadrunner.MecanumDrive;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -26,7 +27,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
-
+@Config
 public class DriveSubsystem extends SubsystemBase {
 
     OpMode opMode;
@@ -73,7 +74,7 @@ public class DriveSubsystem extends SubsystemBase {
     private int TOLERANCE = 1;
 
     //turning constants
-    private final double TURNING_P = 0.5;
+    public static double TURNING_P = 0.0025;
 
     public DriveSubsystem(OpMode opMode) {
         this.opMode = opMode;

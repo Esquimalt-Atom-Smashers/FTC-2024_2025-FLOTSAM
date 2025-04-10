@@ -12,36 +12,31 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import java.util.Arrays;
 import java.util.List;
 
-@TeleOp(name="AprilTagTurning", group="Robot")
-public class AprilTagTurning extends LinearOpMode {
+@TeleOp(name="ManualTurning", group="Robot")
+public class ManualTurning extends LinearOpMode {
     DriveSubsystem driveSubsystem;
     Limelight3A limelight;
     @Override
     public void runOpMode() throws InterruptedException {
         driveSubsystem = new DriveSubsystem(this);
 
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        telemetry.setMsTransmissionInterval(11);
-
-        limelight.pipelineSwitch(0);
-        limelight.start();
-
         waitForStart();
         while (opModeIsActive()){
-            if (!Arrays.equals(getLimelightDegree(limelight), new double[]{10000, 10000})){
-                double xDegree = getLimelightDegree(limelight)[0];
-                driveSubsystem.turnTo(driveSubsystem.getHeading() + xDegree);
-            }
+            if (gamepad1.dpad_up) {driveSubsystem.turnTo(0);
+            } else if (gamepad1.dpad_right) {driveSubsystem.turnTo(90);
+            } else if (gamepad1.dpad_down) {driveSubsystem.turnTo(179.9);
+            } else if (gamepad1.dpad_left) {driveSubsystem.turnTo(270);}
+            else driveSubsystem.turnTo(driveSubsystem.getHeading());
 
+            telemetry.addData("Heading", driveSubsystem.getHeading());
             telemetry.update();
         }
-        limelight.stop();
     }
 
     public double[] getLimelightDegree(Limelight3A limelight) {
         LLResult result = limelight.getLatestResult();
-        double xDegree = 10000;
-        double yDegree = 10000;
+        double xDegree = -1;
+        double yDegree = -1;
         if (result != null) {
             Pose3D botpose = result.getBotpose();
             double captureLatency = result.getCaptureLatency();
@@ -62,33 +57,19 @@ public class AprilTagTurning extends LinearOpMode {
                 // Access fiducial results
                 List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
                 for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                    double xRes = fr.getTargetXDegrees();
-                    double yRes = fr.getTargetYDegrees();
-                    telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(),xRes, yRes);
-
-                    if(xRes < xDegree && yRes < yDegree) {
-                        xDegree = xRes;
-                        yDegree = yRes;
-                    }
+                    telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(),fr.getTargetXDegrees(), fr.getTargetYDegrees());
                 }
 
                 // Access color results
                 List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
                 for (LLResultTypes.ColorResult cr : colorResults) {
-                    double xRes = cr.getTargetXDegrees();
-                    double yRes = cr.getTargetYDegrees();
                     telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
-
-                    if(xRes < xDegree && yRes < yDegree) {
-                        xDegree = xRes;
-                        yDegree = yRes;
-                    }
                 }
             }
         } else {
             telemetry.addData("Limelight", "No data available");
         }
 
-    return new double[] {xDegree, yDegree};
+        return new double[] {xDegree, yDegree};
     }
 }
