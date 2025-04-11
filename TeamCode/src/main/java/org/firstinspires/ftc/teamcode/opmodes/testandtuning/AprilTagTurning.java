@@ -28,11 +28,16 @@ public class AprilTagTurning extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()){
-            if (!Arrays.equals(getLimelightDegree(limelight), new double[]{10000, 10000})){
-                double xDegree = getLimelightDegree(limelight)[0];
+            double xDegree = getLimelightDegree(limelight)[0];
+            double yDegree = getLimelightDegree(limelight)[1];
+            if (xDegree != 10000 && yDegree != 10000){
+                telemetry.addData("Obj ","X: %.2f, Y: %.2f", xDegree, yDegree);
+                telemetry.addData("target heading", driveSubsystem.getHeading() + xDegree);
                 driveSubsystem.turnTo(driveSubsystem.getHeading() + xDegree);
+            } else{
+                driveSubsystem.stopAll();
             }
-
+            telemetry.addData("Heading", driveSubsystem.getHeading());
             telemetry.update();
         }
         limelight.stop();
@@ -43,21 +48,21 @@ public class AprilTagTurning extends LinearOpMode {
         double xDegree = 10000;
         double yDegree = 10000;
         if (result != null) {
-            Pose3D botpose = result.getBotpose();
+//            Pose3D botpose = result.getBotpose();
             double captureLatency = result.getCaptureLatency();
             double targetingLatency = result.getTargetingLatency();
-            double parseLatency = result.getParseLatency();
+//            double parseLatency = result.getParseLatency();
             telemetry.addData("LL Latency", captureLatency + targetingLatency);
-            telemetry.addData("Parse Latency", parseLatency);
-            telemetry.addData("PythonOutput", java.util.Arrays.toString(result.getPythonOutput()));
+//            telemetry.addData("Parse Latency", parseLatency);
+//            telemetry.addData("PythonOutput", java.util.Arrays.toString(result.getPythonOutput()));
 
             if (result.isValid()) {
-                telemetry.addData("tx", result.getTx());
-                telemetry.addData("txnc", result.getTxNC());
-                telemetry.addData("ty", result.getTy());
-                telemetry.addData("tync", result.getTyNC());
-
-                telemetry.addData("Botpose", botpose.toString());
+//                telemetry.addData("tx", result.getTx());
+//                telemetry.addData("txnc", result.getTxNC());
+//                telemetry.addData("ty", result.getTy());
+//                telemetry.addData("tync", result.getTyNC());
+//
+//                telemetry.addData("Botpose", botpose.toString());
 
                 // Access fiducial results
                 List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
@@ -66,7 +71,7 @@ public class AprilTagTurning extends LinearOpMode {
                     double yRes = fr.getTargetYDegrees();
                     telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(),xRes, yRes);
 
-                    if(xRes < xDegree && yRes < yDegree) {
+                    if(Math.abs(xRes) < Math.abs(xDegree) && Math.abs(yRes) < Math.abs(yDegree)) {
                         xDegree = xRes;
                         yDegree = yRes;
                     }
@@ -78,8 +83,7 @@ public class AprilTagTurning extends LinearOpMode {
                     double xRes = cr.getTargetXDegrees();
                     double yRes = cr.getTargetYDegrees();
                     telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
-
-                    if(xRes < xDegree && yRes < yDegree) {
+                    if(Math.abs(xRes) < Math.abs(xDegree) && Math.abs(yRes) < Math.abs(yDegree)) {
                         xDegree = xRes;
                         yDegree = yRes;
                     }
@@ -89,6 +93,6 @@ public class AprilTagTurning extends LinearOpMode {
             telemetry.addData("Limelight", "No data available");
         }
 
-    return new double[] {xDegree, yDegree};
+    return new double[] {-xDegree, yDegree};
     }
 }

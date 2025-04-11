@@ -74,7 +74,7 @@ public class DriveSubsystem extends SubsystemBase {
     private int TOLERANCE = 1;
 
     //turning constants
-    public static double TURNING_P = 0.0025;
+    public static double TURNING_P = 0.03;
 
     public DriveSubsystem(OpMode opMode) {
         this.opMode = opMode;
@@ -193,14 +193,21 @@ public class DriveSubsystem extends SubsystemBase {
         while (headingError > 180)  headingError -= 360;
         while (headingError <= -180) headingError += 360;
 
+        telemetry.addData("heading error", headingError);
         turn = Range.clip(headingError * TURNING_P, -1, 1);
 
-        frontLeftMotor.setPower(Range.clip((turn), -1, 1) * speedMultiplier);
-        frontRightMotor.setPower(Range.clip((- turn), -1, 1) * speedMultiplier);
-        backLeftMotor.setPower(Range.clip((turn), -1, 1) * speedMultiplier);
-        backRightMotor.setPower(Range.clip((- turn), -1, 1) * speedMultiplier);
+        frontLeftMotor.setPower(Range.clip((- turn), -1, 1) * speedMultiplier);
+        frontRightMotor.setPower(Range.clip((turn), -1, 1) * speedMultiplier);
+        backLeftMotor.setPower(Range.clip((- turn), -1, 1) * speedMultiplier);
+        backRightMotor.setPower(Range.clip((turn), -1, 1) * speedMultiplier);
     }
 
+    public void stopAll(){
+        frontLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        backRightMotor.setPower(0);
+    }
     //Setters
 
     public void setSpeedMultiplier(double multiplier) {
