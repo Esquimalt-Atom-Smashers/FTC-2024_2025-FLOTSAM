@@ -17,6 +17,11 @@ public class LimelightSubsystem extends SubsystemBase {
 
     Limelight3A limelight;
 
+/*  limelight pos on bot:
+    X 7.225 to the left
+    Y 4.625 forward from middle
+    Yaw 90 to the left
+*/
     public LimelightSubsystem(OpMode opMode) {
         limelight = opMode.hardwareMap.get(Limelight3A.class, "limelight");
         this.telemetry = opMode.telemetry;
@@ -30,6 +35,7 @@ public class LimelightSubsystem extends SubsystemBase {
         LLResult result = limelight.getLatestResult();
         double xDegree = 10000;
         double yDegree = 10000;
+
         if (result != null) {
 //            Pose3D botpose = result.getBotpose();
             double captureLatency = result.getCaptureLatency();
@@ -83,6 +89,7 @@ public class LimelightSubsystem extends SubsystemBase {
         LLResult result = limelight.getLatestResult();
         double X = 10000;
         double Y = 10000;
+        double Heading = 10000;
         if (result != null) {
             Pose3D botpose = result.getBotpose();
             double captureLatency = result.getCaptureLatency();
@@ -98,18 +105,13 @@ public class LimelightSubsystem extends SubsystemBase {
 //                telemetry.addData("ty", result.getTy());
 //                telemetry.addData("tync", result.getTyNC());
                 X = botpose.getPosition().x;
-
+                Y = botpose.getPosition().y;
+                Heading = botpose.getOrientation().getYaw();
                 telemetry.addData("Botpose", botpose.toString());
-
-                // Access fiducial results
-                List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
-                for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                    telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(),xRes, yRes);
                 }
-            }
         } else {
             telemetry.addData("Limelight", "No data available");
         }
-        return new double[] {X, Y};
+        return new double[] {X, Y, Heading};
     }
 }
