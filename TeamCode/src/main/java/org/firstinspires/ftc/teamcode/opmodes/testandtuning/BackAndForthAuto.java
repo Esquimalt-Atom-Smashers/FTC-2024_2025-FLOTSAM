@@ -27,26 +27,26 @@ public class BackAndForthAuto extends LinearOpMode {
 
     @Override
     public void runOpMode()  {
-        Pose2d beginPose = new Pose2d(48,0 , Math.toRadians(270));
+        Pose2d beginPose = new Pose2d(0,48 , Math.toRadians(0));
         this.mecanumDrive = new MecanumDrive(hardwareMap, beginPose);
         this.limelightSubsystem = new LimelightSubsystem(this);
 
         waitForStart();
 
         TrajectoryActionBuilder path = mecanumDrive.actionBuilder(beginPose)
-                .strafeToConstantHeading(new Vector2d(48, 24))
-                .strafeToConstantHeading(new Vector2d(48, 0));
+                .strafeToConstantHeading(new Vector2d(24, 48))
+                .strafeToConstantHeading(new Vector2d(0, 48));
 
 
         Actions.runBlocking(
                 new ParallelAction(
                         new SequentialAction(
                                 mecanumDrive.actionBuilder(beginPose)
-                                        .strafeToConstantHeading(new Vector2d(48, 24))
-                                        .strafeToConstantHeading(new Vector2d(48, 0))
+                                        .strafeToConstantHeading(new Vector2d(24, 48))
+                                        .strafeToConstantHeading(new Vector2d(0, 48))
                                         .build(),
-                                new SleepAction(1),
-                                calibrateCoordinate(new Vector2d(48,0))
+                                new SleepAction(1)
+                                //calibrateCoordinate(new Vector2d(48,0))
                         ),
                         new InstantAction(() -> getRobotPose())
                 )
@@ -58,6 +58,7 @@ public class BackAndForthAuto extends LinearOpMode {
         double[] limelightPose = limelightSubsystem.getRobotPoseOnField();
         telemetry.addData("RR cood: ", "X: %.3f, Y: %.3f, Heading: %.3f", mecanumDrive.pose.position.x, mecanumDrive.pose.position.y, Math.toDegrees(mecanumDrive.pose.heading.real));
         telemetry.addData("LL cood: ", "X: %.3f, Y: %.3f, Heading: %.3f", limelightPose[0] * limelightSubsystem.METER_TO_INCH, limelightPose[1] * limelightSubsystem.METER_TO_INCH, limelightPose[2]);
+        telemetry.update();
     }
 
     public class CalibrateCoordinate implements Action {
