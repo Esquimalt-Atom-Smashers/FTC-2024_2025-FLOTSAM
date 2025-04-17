@@ -4,11 +4,17 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
@@ -27,11 +33,24 @@ public class BackAndForthAuto extends LinearOpMode {
 
         waitForStart();
 
+        TrajectoryActionBuilder path = mecanumDrive.actionBuilder(beginPose)
+                .strafeToConstantHeading(new Vector2d(48, 24))
+                .strafeToConstantHeading(new Vector2d(48, 0));
+
+
         Actions.runBlocking(
-                mecanumDrive.actionBuilder(beginPose)
-                        .strafeToConstantHeading(new Vector2d(48, 24))
-                        .strafeToConstantHeading(new Vector2d(48, 0))
-                        .build());
+                new ParallelAction(
+                        new SequentialAction(
+                                mecanumDrive.actionBuilder(beginPose)
+                                        .strafeToConstantHeading(new Vector2d(48, 24))
+                                        .strafeToConstantHeading(new Vector2d(48, 0))
+                                        .build(),
+                                new SleepAction(1),
+                                calibrateCoordinate(new Vector2d(48,0))
+                        ),
+                        new InstantAction(() -> getRobotPose())
+                )
+        );
     }
 
     private void getRobotPose() {
@@ -39,5 +58,30 @@ public class BackAndForthAuto extends LinearOpMode {
         double[] limelightPose = limelightSubsystem.getRobotPoseOnField();
         telemetry.addData("RR cood: ", "X: %.3f, Y: %.3f, Heading: %.3f", mecanumDrive.pose.position.x, mecanumDrive.pose.position.y, Math.toDegrees(mecanumDrive.pose.heading.real));
         telemetry.addData("LL cood: ", "X: %.3f, Y: %.3f, Heading: %.3f", limelightPose[0] * limelightSubsystem.METER_TO_INCH, limelightPose[1] * limelightSubsystem.METER_TO_INCH, limelightPose[2]);
+    }
+
+    public class CalibrateCoordinate implements Action {
+        Vector2d target;
+        public CalibrateCoordinate(Vector2d target) {
+            this.target = target;
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            double[] limelightPose = limelightSubsystem.getRobotPoseOnField();
+            double LLX = limelightPose[0] * limelightSubsystem.METER_TO_INCH;
+            double LLY = limelightPose[1] * limelightSubsystem.METER_TO_INCH;
+            if (LLX != 10000 && LLY != 10000) {
+                mecanumDrive.actionBuilder(new Pose2d(LLX, LLY, limelightPose[2]))
+                        .strafeToConstantHeading(target)
+                        .build();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public Action calibrateCoordinate(Vector2d target) {
+        return new CalibrateCoordinate(target);
     }
 }
