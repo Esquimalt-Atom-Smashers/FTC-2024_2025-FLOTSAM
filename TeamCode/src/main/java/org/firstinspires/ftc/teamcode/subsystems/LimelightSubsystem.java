@@ -16,10 +16,11 @@ public class LimelightSubsystem extends SubsystemBase {
     Telemetry telemetry;
 
     Limelight3A limelight;
+    public double METER_TO_INCH = 39.37008;
 
 /*  limelight pos on bot:
-    X 7.225 to the left
-    Y 4.625 forward from middle
+    X 7.225 inch to the left
+    Y 4.625 inch forward from middle
     Yaw 90 to the left
 */
     public LimelightSubsystem(OpMode opMode) {

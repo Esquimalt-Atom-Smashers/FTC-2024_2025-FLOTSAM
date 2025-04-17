@@ -18,13 +18,13 @@ public class ApriltagPoseCalibration extends OpMode {
 //
     @Override
     public void init() {
-        mecanumDrive = new MecanumDrive(this.hardwareMap, new Pose2d(new Vector2d(-48, -48), Math.toRadians(270)));
+        mecanumDrive = new MecanumDrive(this.hardwareMap, new Pose2d(new Vector2d(0, 48), Math.toRadians(270)));
         limelightSubsystem = new LimelightSubsystem(this);
     }
     public void loop() {
         mecanumDrive.updatePoseEstimate();
         double[] limelightPose = limelightSubsystem.getRobotPoseOnField();
-        telemetry.addData("RR cood: ", "X: %.3f, Y: %.3f, Heading: %.3f", mecanumDrive.pose.position.x, mecanumDrive.pose.position.y, mecanumDrive.pose.heading.real);
+        telemetry.addData("RR cood: ", "X: %.3f, Y: %.3f, Heading: %.3f", mecanumDrive.pose.position.x, mecanumDrive.pose.position.y, Math.toDegrees(mecanumDrive.pose.heading.real));
         telemetry.addData("LL cood: ", "X: %.3f, Y: %.3f, Heading: %.3f", limelightPose[0] * METER_TO_INCH, limelightPose[1] * METER_TO_INCH, limelightPose[2]);
     }
 }
