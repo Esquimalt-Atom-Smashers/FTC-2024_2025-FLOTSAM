@@ -20,37 +20,25 @@ import org.firstinspires.ftc.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SpecimenArmSubsystem;
 
-@Autonomous(name = "Test:Back & forth Auto", group = "Push Auto")
-public class BackAndForthAuto extends LinearOpMode {
+@Autonomous(name = "Test:Go to apriltag Auto", group = "Push Auto")
+public class GoToAprilTagAuto extends LinearOpMode {
     private MecanumDrive mecanumDrive;
     private LimelightSubsystem limelightSubsystem;
-    Pose2d correctPose = new Pose2d(0, 0, 0);
 
     @Override
     public void runOpMode()  {
         Pose2d beginPose = new Pose2d(0,48 , Math.toRadians(0));
-        this.mecanumDrive = new MecanumDrive(hardwareMap, beginPose);
         this.limelightSubsystem = new LimelightSubsystem(this);
 
         waitForStart();
 
         Actions.runBlocking(
                 new ParallelAction(
-                        new SequentialAction(
-                                mecanumDrive.actionBuilder(beginPose)
-                                        .strafeToConstantHeading(new Vector2d(24, 48))
-                                        .strafeToConstantHeading(new Vector2d(0, 48))
-                                        .build(),
-                                new SleepAction(2),
-                                calibrateCoordinate(),
-                                new InstantAction(() -> getRobotPose()),
-                                mecanumDrive.actionBuilder(correctPose)
-                                        .strafeToConstantHeading(new Vector2d(0, 48))
-                                        .build()
-                        )
-                        //new InstantAction(() -> getRobotPose())
+                        calibrateCoordinate(new Vector2d(0, 48)),
+                        new InstantAction(this::getRobotPose)
                 )
         );
+
     }
 
     private void getRobotPose() {
@@ -62,21 +50,34 @@ public class BackAndForthAuto extends LinearOpMode {
     }
 
     public class CalibrateCoordinate implements Action {
+        Vector2d target;
+        public CalibrateCoordinate(Vector2d target) {
+            this.target = target;
+        }
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            double[] limelightPose = limelightSubsystem.getRobotPoseOnField();
-            double LLX = limelightPose[0] * limelightSubsystem.METER_TO_INCH;
-            double LLY = limelightPose[1] * limelightSubsystem.METER_TO_INCH;
-            if (LLX != 10000 && LLY != 10000) {
-                correctPose = new Pose2d(LLX, LLY, Math.toRadians(limelightPose[2]));
-                return !correctPose.equals(new Pose2d(0, 0, 0));
-            } else {
-                return !correctPose.equals(new Pose2d(0, 0, 0));
-            }
+//            double[] limelightPose = limelightSubsystem.getRobotPoseOnField();
+//            double LLX = limelightPose[0] * limelightSubsystem.METER_TO_INCH;
+//            double LLY = limelightPose[1] * limelightSubsystem.METER_TO_INCH;
+//            if (LLX != 10000 && LLY != 10000) {
+//                mecanumDrive = new MecanumDrive(hardwareMap, new Pose2d(LLX, LLY, Math.toRadians(limelightPose[2])));
+//                mecanumDrive.actionBuilder(new Pose2d(LLX, LLY, Math.toRadians(limelightPose[2])))
+//                        .strafeToConstantHeading(target)
+//                        .build();
+//                telemetry.addLine("done mechanium");
+//                return false;
+//            } else {
+//                return true;
+//            }
+            mecanumDrive = new MecanumDrive(hardwareMap, new Pose2d(0, 24, Math.toRadians(270)));
+            mecanumDrive.actionBuilder( new Pose2d(0, 24, Math.toRadians(270)))
+                        .strafeToConstantHeading(target)
+                        .build();
+            return false;
         }
     }
 
-    public Action calibrateCoordinate() {
-        return new CalibrateCoordinate();
+    public Action calibrateCoordinate(Vector2d target) {
+        return new CalibrateCoordinate(target);
     }
 }
