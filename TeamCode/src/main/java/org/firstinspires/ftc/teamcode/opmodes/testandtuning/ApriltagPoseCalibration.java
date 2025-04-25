@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.roadrunner.MecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 
 @TeleOp
@@ -14,9 +13,6 @@ public class ApriltagPoseCalibration extends OpMode {
     MecanumDrive mecanumDrive;
     LimelightSubsystem limelightSubsystem;
     double METER_TO_INCH = 39.37008;
-    Pose2d correctPose = new Pose2d(0, 0, 0);
-
-    //
     @Override
     public void init() {
         mecanumDrive = new MecanumDrive(this.hardwareMap, new Pose2d(new Vector2d(0, 48), Math.toRadians(270)));
@@ -27,6 +23,9 @@ public class ApriltagPoseCalibration extends OpMode {
         double[] limelightPose = limelightSubsystem.getRobotPoseOnField();
         telemetry.addData("RR cood: ", "X: %.3f, Y: %.3f, Heading: %.3f", mecanumDrive.pose.position.x, mecanumDrive.pose.position.y, Math.toDegrees(mecanumDrive.pose.heading.real));
         telemetry.addData("LL cood: ", "X: %.3f, Y: %.3f, Heading: %.3f", limelightPose[0] * METER_TO_INCH, limelightPose[1] * METER_TO_INCH, limelightPose[2]);
-        telemetry.addData("is equal to", correctPose.equals(new Pose2d(0,0,0)));
+
+        Pose2d LLpose2d = limelightSubsystem.lltoPose2d(limelightSubsystem.getRobotPoseOnField());
+        telemetry.addData("Cannot see Apriltag", LLpose2d.equals(limelightSubsystem.errorPose2d));
+        telemetry.update();
     }
 }

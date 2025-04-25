@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 public class TwoDBackAndForthAuto extends LinearOpMode {
     private MecanumDrive mecanumDrive;
     private LimelightSubsystem limelightSubsystem;
-    Pose2d correctPose = new Pose2d(0, 0, 0);
+    Pose2d correctPose;
     ElapsedTime LLReactionTimer = new ElapsedTime();
     Boolean firstTimer = true;
 
@@ -34,6 +34,7 @@ public class TwoDBackAndForthAuto extends LinearOpMode {
         Pose2d beginPose = new Pose2d(0,48 , Math.toRadians(0));
         this.mecanumDrive = new MecanumDrive(hardwareMap, beginPose);
         this.limelightSubsystem = new LimelightSubsystem(this);
+        correctPose = limelightSubsystem.errorPose2d;
 
         waitForStart();
         LLReactionTimer.reset();
@@ -45,26 +46,25 @@ public class TwoDBackAndForthAuto extends LinearOpMode {
                                 mecanumDrive.actionBuilder(beginPose)
                                         .splineToLinearHeading(new Pose2d(15, 15, Math.toRadians(180)),  Math.toRadians(180))
                                         .strafeToLinearHeading(new Vector2d(0, 48), Math.toRadians(0))
-                                        .build(),
-                                new InstantAction(() -> delays = actionTimer.seconds()),
-                                calibrateCoordinate(),
+                                        .build()
+                        )
+                )
+        );
+        delays = actionTimer.seconds();
+        correctPose = limelightSubsystem.getLimelightCoorInAuto();
+        getRobotPose();
+        Actions.runBlocking(
+                new SequentialAction(
+                        mecanumDrive.actionBuilder(correctPose)
+                                .strafeToLinearHeading(new Vector2d(0, 48), Math.toRadians(0))
+                                .build(),
+                        new ParallelAction(
+                                new SleepAction(999),
                                 new InstantAction(() -> getRobotPose())
                         )
                 )
         );
-        if (!correctPose.equals(new Pose2d(0, 0, 0))) {
-            Actions.runBlocking(
-                    new SequentialAction(
-                            mecanumDrive.actionBuilder(correctPose)
-                                    .strafeToLinearHeading(new Vector2d(0, 48), Math.toRadians(0))
-                                    .build(),
-                            new ParallelAction(
-                                    new SleepAction(999),
-                                    new InstantAction(() -> getRobotPose())
-                            )
-                    )
-            );
-        }
+
     }
 
 
@@ -80,22 +80,5 @@ public class TwoDBackAndForthAuto extends LinearOpMode {
         telemetry.addData("LL cood: ", "X: %.3f, Y: %.3f, Heading: %.3f", limelightPose[0] * limelightSubsystem.METER_TO_INCH, limelightPose[1] * limelightSubsystem.METER_TO_INCH, limelightPose[2]);
         telemetry.addData("waited time" , delays);
         telemetry.update();
-    }
-
-    public class CalibrateCoordinate implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            double[] limelightPose = limelightSubsystem.getRobotPoseOnField();
-            double LLX = limelightPose[0] * limelightSubsystem.METER_TO_INCH;
-            double LLY = limelightPose[1] * limelightSubsystem.METER_TO_INCH;
-            if (LLX != 10000 && LLY != 10000) {
-                correctPose = new Pose2d(LLX, LLY, Math.toRadians(limelightPose[2]));
-            }
-            return !correctPose.equals(new Pose2d(0, 0, 0));
-        }
-    }
-
-    public Action calibrateCoordinate() {
-        return new CalibrateCoordinate();
     }
 }

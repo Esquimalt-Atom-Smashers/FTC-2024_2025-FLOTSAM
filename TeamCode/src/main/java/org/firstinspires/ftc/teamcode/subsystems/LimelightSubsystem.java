@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -17,6 +22,8 @@ public class LimelightSubsystem extends SubsystemBase {
 
     Limelight3A limelight;
     public double METER_TO_INCH = 39.37008;
+    public double[] errorPose3d = new double[] {10000, 10000, 10000};
+    public Pose2d errorPose2d = new Pose2d(10000 * METER_TO_INCH, 10000 * METER_TO_INCH, Math.toRadians(10000));
 
 /*  limelight pos on bot:
     X 7.225 inch to the left
@@ -114,5 +121,21 @@ public class LimelightSubsystem extends SubsystemBase {
             telemetry.addData("Limelight", "No data available");
         }
         return new double[] {X, Y, Heading};
+    }
+
+    public Pose2d lltoPose2d(double[] LLpose) {
+        double LLX = LLpose[0] * METER_TO_INCH;
+        double LLY = LLpose[1] * METER_TO_INCH;
+        double LLA = Math.toRadians(LLpose[2]);
+        return new Pose2d(LLX, LLY, LLA);
+    }
+
+    public Pose2d getLimelightCoorInAuto() {
+        Pose2d correctPose = errorPose2d;
+        while (correctPose.equals(errorPose2d)) {
+            double[] result = getRobotPoseOnField();
+            correctPose = lltoPose2d(result);
+        }
+        return correctPose;
     }
 }
