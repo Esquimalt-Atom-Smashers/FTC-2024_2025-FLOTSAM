@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -130,7 +126,7 @@ public class LimelightSubsystem extends SubsystemBase {
         return new Pose2d(LLX, LLY, LLA);
     }
 
-    public Pose2d getLimelightCoorInAuto() {
+    public Pose2d getLLCoorInAutoBlocking() {
         Pose2d correctPose = errorPose2d;
         while (correctPose.equals(errorPose2d)) {
             double[] result = getRobotPoseOnField();

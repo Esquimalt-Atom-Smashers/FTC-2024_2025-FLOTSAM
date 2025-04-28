@@ -26,64 +26,150 @@ public class BlueRightSpecimenAuto extends LinearOpMode {
 
         waitForStart();
 
-        Actions.runBlocking (
-                drive.actionBuilder(beginPose)
-                        .stopAndAdd(specimenArmSubsystem.CloseClaw())
-                        .stopAndAdd(specimenArmSubsystem.ScoreSpecimen())
-                        .strafeToLinearHeading(new Vector2d(5,28), Math.toRadians(180))
-                        .stopAndAdd(specimenArmSubsystem.OpenClaw())
-//get sample
-                        .strafeToConstantHeading( new Vector2d(-35.75, 53) )
-                        .strafeToConstantHeading(new Vector2d(-35.75,30))
+//        Actions.runBlocking (
+//                drive.actionBuilder(beginPose)
+//                        .stopAndAdd(specimenArmSubsystem.CloseClaw())
+//                        .stopAndAdd(specimenArmSubsystem.ScoreSpecimen())
+//                        .strafeToLinearHeading(new Vector2d(5,28), Math.toRadians(180))
+//                        .stopAndAdd(specimenArmSubsystem.OpenClaw())
+////get sample
+//                        .strafeToConstantHeading( new Vector2d(-35.75, 53) )
+//                        .strafeToConstantHeading(new Vector2d(-35.75,30))
+//
+//                        .stopAndAdd(new SleepAction(0.2))
+//                        .stopAndAdd(specimenArmSubsystem.PutDown())
+//                        .stopAndAdd(specimenArmSubsystem.OpenClaw())
+//
+//                        .splineToConstantHeading(new Vector2d(-47.6,17), Math.toRadians(180))
+//                        .strafeToConstantHeading(new Vector2d( -47.6, 61))
+//                        .strafeToLinearHeading(new Vector2d(-47.6, 48), Math.toRadians(180))
+//
+//                        .stopAndAdd(specimenArmSubsystem.WallPos())
+//                        .stopAndAdd(specimenArmSubsystem.OpenClaw())
+////get sec spec
+//                        .setTangent(Math.toRadians(270))
+//                        .splineToConstantHeading(new Vector2d(-55, 71), Math.toRadians(90))
+//                        .strafeToLinearHeading(new Vector2d(-40, 71), Math.toRadians(184))
+//
+//                        .stopAndAdd(specimenArmSubsystem.CloseClaw())
+//                        .stopAndAdd(new SleepAction(0.3))
+//                        .stopAndAdd(specimenArmSubsystem.CloseClaw())
+//                        .stopAndAdd(specimenArmSubsystem.LiftPos())
+//                        .strafeToLinearHeading(new Vector2d(-40, 60), Math.toRadians(180))
+//
+//                        .stopAndAdd(specimenArmSubsystem.ScoreSpecimen())
+//                        .setTangent(0)
+//                        .splineToLinearHeading(new Pose2d(new Vector2d(-5,30), Math.toRadians(180)), Math.toRadians(270))
+////get third spec
+//                        .setTangent(Math.toRadians(90))
+//                        .splineToLinearHeading(new Pose2d(new Vector2d(-8,50),Math.toRadians(180)),Math.toRadians(90))
+//
+//                        .stopAndAdd(specimenArmSubsystem.OpenClaw())
+//                        .stopAndAdd(specimenArmSubsystem.WallPos())
+//                        .splineToConstantHeading(new Vector2d(-55, 71), Math.toRadians(90))
+//                        .strafeToLinearHeading(new Vector2d(-40, 71), Math.toRadians(184))
+//
+//                        .stopAndAdd(specimenArmSubsystem.CloseClaw())
+//                        .stopAndAdd(new SleepAction(0.3))
+//                        .stopAndAdd(specimenArmSubsystem.LiftPos())
+//
+//
+//                        .strafeToLinearHeading(new Vector2d(-40, 60), Math.toRadians(180))
+//                        .stopAndAdd(specimenArmSubsystem.ScoreSpecimen())
+//
+//                        .setTangent(0)
+//                        .splineToLinearHeading(new Pose2d(new Vector2d(-8,30), Math.toRadians(180)), Math.toRadians(270))
+//
+//                        .setTangent(Math.toRadians(90))
+//                        .splineToConstantHeading(new Vector2d(-38, 70), Math.toRadians(180))
+//                        .build());
 
-                        .stopAndAdd(new SleepAction(0.2))
-                        .stopAndAdd(specimenArmSubsystem.PutDown())
-                        .stopAndAdd(specimenArmSubsystem.OpenClaw())
+        TrajectoryActionBuilder scoreFirstSpec = drive.actionBuilder(beginPose)
+                .strafeToLinearHeading(new Vector2d(5,28), Math.toRadians(180));
 
-                        .splineToConstantHeading(new Vector2d(-47.6,17), Math.toRadians(180))
-                        .strafeToConstantHeading(new Vector2d( -47.6, 61))
-                        .strafeToLinearHeading(new Vector2d(-47.6, 48), Math.toRadians(180))
+        TrajectoryActionBuilder acquireThreeSamples = scoreFirstSpec.endTrajectory().fresh()
+                .strafeToConstantHeading( new Vector2d(-35.75, 53) )
+                .strafeToConstantHeading(new Vector2d(-35.75,30))
 
-                        .stopAndAdd(specimenArmSubsystem.WallPos())
-                        .stopAndAdd(specimenArmSubsystem.OpenClaw())
-//get sec spec
-                        .setTangent(Math.toRadians(270))
-                        .splineToConstantHeading(new Vector2d(-55, 71), Math.toRadians(90))
-                        .strafeToLinearHeading(new Vector2d(-40, 71), Math.toRadians(184))
+                .splineToConstantHeading(new Vector2d(-47.6,17), Math.toRadians(180))
+                .strafeToConstantHeading(new Vector2d( -47.6, 61))
+                .strafeToLinearHeading(new Vector2d(-47.6, 48), Math.toRadians(180));
 
-                        .stopAndAdd(specimenArmSubsystem.CloseClaw())
-                        .stopAndAdd(new SleepAction(0.3))
-                        .stopAndAdd(specimenArmSubsystem.CloseClaw())
-                        .stopAndAdd(specimenArmSubsystem.LiftPos())
-                        .strafeToLinearHeading(new Vector2d(-40, 60), Math.toRadians(180))
+        TrajectoryActionBuilder getSecSpec = acquireThreeSamples.endTrajectory().fresh()
+                .setTangent(Math.toRadians(270))
+                .splineToConstantHeading(new Vector2d(-55, 71), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-40, 71), Math.toRadians(184));
 
-                        .stopAndAdd(specimenArmSubsystem.ScoreSpecimen())
-                        .setTangent(0)
-                        .splineToLinearHeading(new Pose2d(new Vector2d(-5,30), Math.toRadians(180)), Math.toRadians(270))
-//get third spec
-                        .setTangent(Math.toRadians(90))
-                        .splineToLinearHeading(new Pose2d(new Vector2d(-8,50),Math.toRadians(180)),Math.toRadians(90))
+        TrajectoryActionBuilder preScoreSec = getSecSpec.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-40, 60), Math.toRadians(180));
 
-                        .stopAndAdd(specimenArmSubsystem.OpenClaw())
-                        .stopAndAdd(specimenArmSubsystem.WallPos())
-                        .splineToConstantHeading(new Vector2d(-55, 71), Math.toRadians(90))
-                        .strafeToLinearHeading(new Vector2d(-40, 71), Math.toRadians(184))
+        TrajectoryActionBuilder scoreSecSpec = preScoreSec.endTrajectory().fresh()
+                .setTangent(0)
+                .splineToLinearHeading(new Pose2d(new Vector2d(-5,30), Math.toRadians(180)), Math.toRadians(270));
 
-                        .stopAndAdd(specimenArmSubsystem.CloseClaw())
-                        .stopAndAdd(new SleepAction(0.3))
-                        .stopAndAdd(specimenArmSubsystem.LiftPos())
+        TrajectoryActionBuilder moveBack = scoreSecSpec.endTrajectory().fresh()
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(new Vector2d(-8,50),Math.toRadians(180)),Math.toRadians(90));
 
+        TrajectoryActionBuilder getThirdSpec = moveBack.endTrajectory().fresh()
+                .splineToConstantHeading(new Vector2d(-55, 71), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-40, 71), Math.toRadians(184));
 
-                        .strafeToLinearHeading(new Vector2d(-40, 60), Math.toRadians(180))
-                        .stopAndAdd(specimenArmSubsystem.ScoreSpecimen())
+        TrajectoryActionBuilder preScoreThird = getThirdSpec.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-40, 60), Math.toRadians(180));
 
-                        .setTangent(0)
-                        .splineToLinearHeading(new Pose2d(new Vector2d(-8,30), Math.toRadians(180)), Math.toRadians(270))
+        TrajectoryActionBuilder scoreThirdSpec = preScoreThird.endTrajectory().fresh()
+                .setTangent(0)
+                .splineToLinearHeading(new Pose2d(new Vector2d(-8,30), Math.toRadians(180)), Math.toRadians(270));
 
-                        .setTangent(Math.toRadians(90))
-                        .splineToConstantHeading(new Vector2d(-38, 70), Math.toRadians(180))
-                        .build());
+        TrajectoryActionBuilder park = scoreThirdSpec.endTrajectory().fresh()
+                .setTangent(Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-38, 70), Math.toRadians(180));
 
-
+        Actions.runBlocking(
+                new SequentialAction(
+                        //First spec
+                        specimenArmSubsystem.CloseClaw(),
+                        specimenArmSubsystem.ScoreSpecimen(),
+                        scoreFirstSpec.build(),
+                        specimenArmSubsystem.OpenClaw(),
+                        acquireThreeSamples.build(),
+                        new SleepAction(0.2),
+                        new ParallelAction(
+                                specimenArmSubsystem.OpenClaw(),
+                                specimenArmSubsystem.PutDown()
+                        ),
+                        //Sec spec
+                        new ParallelAction(
+                                getSecSpec.build(),
+                                specimenArmSubsystem.OpenClaw(),
+                                specimenArmSubsystem.WallPos()
+                        ),
+                        specimenArmSubsystem.CloseClaw(),
+                        new SleepAction(0.3),
+                        specimenArmSubsystem.LiftPos(),
+                        preScoreSec.build(),
+                        specimenArmSubsystem.ScoreSpecimen(),
+                        scoreSecSpec.build(),
+                        //Third specimen
+                        new ParallelAction(
+                                moveBack.build(),
+                                specimenArmSubsystem.OpenClaw()
+                        ),
+                        new ParallelAction(
+                                getThirdSpec.build(),
+                                specimenArmSubsystem.WallPos()
+                        ),
+                        specimenArmSubsystem.CloseClaw(),
+                        new SleepAction(0.3),
+                        specimenArmSubsystem.LiftPos(),
+                        preScoreThird.build(),
+                        specimenArmSubsystem.ScoreSpecimen(),
+                        scoreThirdSpec.build(),
+                        //Park
+                        specimenArmSubsystem.OpenClaw(),
+                        park.build()
+                )
+        );
     }
 }

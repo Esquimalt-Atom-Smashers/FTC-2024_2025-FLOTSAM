@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.testandtuning;
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -51,7 +47,7 @@ public class TwoDBackAndForthAuto extends LinearOpMode {
                 )
         );
         delays = actionTimer.seconds();
-        correctPose = limelightSubsystem.getLimelightCoorInAuto();
+        correctPose = limelightSubsystem.getLLCoorInAutoBlocking();
         getRobotPose();
         Actions.runBlocking(
                 new SequentialAction(
