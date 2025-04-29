@@ -12,17 +12,23 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SpecimenArmSubsystem;
 
 @Autonomous(name = "Test:BlueRightSpecimenAuto", group = "Scoring Auto")
 public class BlueRightSpecimenAuto extends LinearOpMode {
     private SpecimenArmSubsystem specimenArmSubsystem;
+    private LimelightSubsystem limelightSubsystem;
 
     @Override
     public void runOpMode()  {
         Pose2d beginPose = new Pose2d(-7.125,63.25 , Math.toRadians(180));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         this.specimenArmSubsystem = new SpecimenArmSubsystem(this);
+        this.limelightSubsystem = new LimelightSubsystem(this);
+
+        Pose2d firstCalibrationPose = limelightSubsystem.errorPose2d;
+        Pose2d secondCalibrationPose = limelightSubsystem.errorPose2d;
 
         waitForStart();
 
@@ -95,7 +101,25 @@ public class BlueRightSpecimenAuto extends LinearOpMode {
                 .strafeToConstantHeading(new Vector2d( -47.6, 61))
                 .strafeToLinearHeading(new Vector2d(-47.6, 48), Math.toRadians(180));
 
-        TrajectoryActionBuilder getSecSpec = acquireThreeSamples.endTrajectory().fresh()
+        Actions.runBlocking(
+                new SequentialAction(
+                        //First spec
+                        specimenArmSubsystem.CloseClaw(),
+                        specimenArmSubsystem.ScoreSpecimen(),
+                        scoreFirstSpec.build(),
+                        specimenArmSubsystem.OpenClaw(),
+                        acquireThreeSamples.build(),
+                        new SleepAction(0.2),
+                        new ParallelAction(
+                                specimenArmSubsystem.OpenClaw(),
+                                specimenArmSubsystem.PutDown()
+                        )
+                )
+        );
+
+        firstCalibrationPose = limelightSubsystem.getLLCoorInAutoBlocking();
+        //first calibration
+        TrajectoryActionBuilder getSecSpec = drive.actionBuilder(firstCalibrationPose)
                 .setTangent(Math.toRadians(270))
                 .splineToConstantHeading(new Vector2d(-55, 71), Math.toRadians(90))
                 .strafeToLinearHeading(new Vector2d(-40, 71), Math.toRadians(184));
@@ -111,34 +135,8 @@ public class BlueRightSpecimenAuto extends LinearOpMode {
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(new Vector2d(-8,50),Math.toRadians(180)),Math.toRadians(90));
 
-        TrajectoryActionBuilder getThirdSpec = moveBack.endTrajectory().fresh()
-                .splineToConstantHeading(new Vector2d(-55, 71), Math.toRadians(90))
-                .strafeToLinearHeading(new Vector2d(-40, 71), Math.toRadians(184));
-
-        TrajectoryActionBuilder preScoreThird = getThirdSpec.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-40, 60), Math.toRadians(180));
-
-        TrajectoryActionBuilder scoreThirdSpec = preScoreThird.endTrajectory().fresh()
-                .setTangent(0)
-                .splineToLinearHeading(new Pose2d(new Vector2d(-8,30), Math.toRadians(180)), Math.toRadians(270));
-
-        TrajectoryActionBuilder park = scoreThirdSpec.endTrajectory().fresh()
-                .setTangent(Math.toRadians(90))
-                .splineToConstantHeading(new Vector2d(-38, 70), Math.toRadians(180));
-
         Actions.runBlocking(
                 new SequentialAction(
-                        //First spec
-                        specimenArmSubsystem.CloseClaw(),
-                        specimenArmSubsystem.ScoreSpecimen(),
-                        scoreFirstSpec.build(),
-                        specimenArmSubsystem.OpenClaw(),
-                        acquireThreeSamples.build(),
-                        new SleepAction(0.2),
-                        new ParallelAction(
-                                specimenArmSubsystem.OpenClaw(),
-                                specimenArmSubsystem.PutDown()
-                        ),
                         //Sec spec
                         new ParallelAction(
                                 getSecSpec.build(),
@@ -155,7 +153,29 @@ public class BlueRightSpecimenAuto extends LinearOpMode {
                         new ParallelAction(
                                 moveBack.build(),
                                 specimenArmSubsystem.OpenClaw()
-                        ),
+                        )
+                )
+        );
+
+        secondCalibrationPose = limelightSubsystem.getLLCoorInAutoBlocking();
+        //second calibration
+        TrajectoryActionBuilder getThirdSpec = drive.actionBuilder(secondCalibrationPose)
+                .splineToConstantHeading(new Vector2d(-55, 71), Math.toRadians(90))
+                .strafeToLinearHeading(new Vector2d(-40, 71), Math.toRadians(184));
+
+        TrajectoryActionBuilder preScoreThird = getThirdSpec.endTrajectory().fresh()
+                .strafeToLinearHeading(new Vector2d(-40, 60), Math.toRadians(180));
+
+        TrajectoryActionBuilder scoreThirdSpec = preScoreThird.endTrajectory().fresh()
+                .setTangent(0)
+                .splineToLinearHeading(new Pose2d(new Vector2d(-8,30), Math.toRadians(180)), Math.toRadians(270));
+
+        TrajectoryActionBuilder park = scoreThirdSpec.endTrajectory().fresh()
+                .setTangent(Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(-38, 70), Math.toRadians(180));
+
+        Actions.runBlocking(
+                new SequentialAction(
                         new ParallelAction(
                                 getThirdSpec.build(),
                                 specimenArmSubsystem.WallPos()
