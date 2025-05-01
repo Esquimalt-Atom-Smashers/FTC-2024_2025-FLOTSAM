@@ -23,7 +23,9 @@ public class LimelightSubsystem extends SubsystemBase {
 
 /*  limelight pos on bot:
     X 7.225 inch to the left
-    Y 4.625 inch forward from middle
+    Y 3.625 inch forward from middle
+    Z 9 7/8 inch from ground
+    
     Yaw 90 to the left
 */
     public LimelightSubsystem(OpMode opMode) {
