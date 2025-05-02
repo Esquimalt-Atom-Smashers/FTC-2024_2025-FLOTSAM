@@ -5,20 +5,17 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.SpecimenArmSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.SpinningWristSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.WristSubsystem;
 
 public class CommandManager {
     ArmSubsystem armSubsystem;
     DriveSubsystem driveSubsystem;
-    SpecimenArmSubsystem specimenArmSubsystem;
-    SpinningWristSubsystem spinningWristSubsystem;
+    WristSubsystem wristSubsystem;
 
-    public CommandManager(ArmSubsystem armSubsystem, DriveSubsystem driveSubsystem, SpecimenArmSubsystem specimenArmSubsystem, SpinningWristSubsystem spinningWristSubsystem) {
+    public CommandManager(ArmSubsystem armSubsystem, DriveSubsystem driveSubsystem, WristSubsystem wristSubsystem) {
         this.armSubsystem = armSubsystem;
         this.driveSubsystem = driveSubsystem;
-        this.specimenArmSubsystem = specimenArmSubsystem;
-        this.spinningWristSubsystem = spinningWristSubsystem;
+        this.wristSubsystem = wristSubsystem;
     }
 
     public SequentialCommandGroup getToHighBasketPositionCommand() {
@@ -33,7 +30,7 @@ public class CommandManager {
         if (Math.abs(armSubsystem.getElbowPosition() - position.elbowPos) <= ArmSubsystem.TOLERANCE) {
             return new SequentialCommandGroup(
                     new ArmSubsystem.ArmToPositionCommand(armSubsystem, position, maxLinearPower, previousElbowMaxPower),
-                    new SpinningWristSubsystem.MoveWristToPositionCommand(spinningWristSubsystem, SpinningWristSubsystem.WristPosition.OUTTAKE),
+                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
                     new RunCommand(() -> {
                         armSubsystem.setLinearMaxPower(previousLinearMaxPower);
                         armSubsystem.setElbowMaxPower(previousElbowMaxPower);
@@ -42,10 +39,10 @@ public class CommandManager {
         } else {
             return new SequentialCommandGroup(
                     new ArmSubsystem.SlideToPositionCommand(armSubsystem, ArmSubsystem.SLIDE_MIN_POSITION, maxLinearPower),
-                    new SpinningWristSubsystem.MoveWristToPositionCommand(spinningWristSubsystem, SpinningWristSubsystem.WristPosition.INTAKE),
+                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.COLLAPSED)),
                     new ArmSubsystem.ElbowToPositionCommand(armSubsystem, position.elbowPos, (position.elbowPos < armSubsystem.getElbowPosition()) ? maxElbowPowerGoingDown : maxElbowPowerGoingUp),
                     new ArmSubsystem.SlideToPositionCommand(armSubsystem, position.slidePos, maxLinearPower),
-                    new SpinningWristSubsystem.MoveWristToPositionCommand(spinningWristSubsystem, SpinningWristSubsystem.WristPosition.OUTTAKE),
+                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
                     new RunCommand(() -> {
                         armSubsystem.setLinearMaxPower(previousLinearMaxPower);
                         armSubsystem.setElbowMaxPower(previousElbowMaxPower);
@@ -136,9 +133,5 @@ public class CommandManager {
                     armSubsystem.setElbowMaxPower(previousElbowMaxPower);
                 })
         );
-    }
-
-    public SequentialCommandGroup drivebaseToBasket() {
-        return new SequentialCommandGroup(new DriveSubsystem.ActionCommand(driveSubsystem.ToBasket(driveSubsystem), driveSubsystem));
     }
 }

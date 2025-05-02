@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@Disabled
 @TeleOp(name="MotorShower", group = "z. Test")
 public class HardwarePositionViewer extends OpMode {
     DcMotorEx armMotor;

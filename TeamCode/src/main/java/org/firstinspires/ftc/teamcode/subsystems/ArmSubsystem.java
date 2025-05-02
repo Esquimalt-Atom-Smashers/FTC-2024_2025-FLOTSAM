@@ -51,8 +51,6 @@ public class ArmSubsystem extends SubsystemBase {
     private final DcMotorEx elbowMotor;
     private final DcMotorEx linearSlideMotor;
     private final RevTouchSensor slideLimitSwitch;
-    private final DigitalChannel elbowLimitSwitch;
-
     //Additional Elements
     private final PIDController elbowController;
     private final PIDController linearSlideController;
@@ -97,8 +95,6 @@ public class ArmSubsystem extends SubsystemBase {
         elbowMotor = opMode.hardwareMap.get(DcMotorEx.class, ELBOW_MOTOR_NAME);
         linearSlideMotor = opMode.hardwareMap.get(DcMotorEx.class, LINEAR_SLIDE_MOTOR_NAME);
         slideLimitSwitch = opMode.hardwareMap.get(RevTouchSensor.class, SLIDE_LIMIT_SWITCH_NAME);
-        elbowLimitSwitch = opMode.hardwareMap.get(DigitalChannel.class, ELBOW_LIMIT_SWITCH_NAME);
-
         //Motor Initialization
         elbowMotor.setDirection(ELBOW_DIRECTION);
         linearSlideMotor.setDirection(LINEAR_SLIDE_DIRECTION);
@@ -109,8 +105,6 @@ public class ArmSubsystem extends SubsystemBase {
         linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elbowMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         linearSlideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        elbowLimitSwitch.setMode(DigitalChannel.Mode.INPUT);
 
         setTargetArmPosition(ELBOW_MIN_POSITION, SLIDE_MIN_POSITION);
         setElbowMaxPower(1.0);
@@ -150,10 +144,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     private boolean isSlideLimitSwitchPressed() {
         return slideLimitSwitch.getValue() == 1; //true for pressed and false for not pressed
-    }
-
-    private boolean isElbowLimitSwitchPressed() {
-        return !elbowLimitSwitch.getState(); //true for pressed and false for not pressed
     }
 
     private void runElbowPID() {
@@ -553,11 +543,6 @@ public class ArmSubsystem extends SubsystemBase {
         //Reset the linear slide encoders when the limit switch is pressed
         if(isSlideLimitSwitchPressed()) {
             resetSlideEncoder();
-        }
-
-        //Reset the elbow encoders when the limit switch is pressed
-        if(isElbowLimitSwitchPressed()) {
-            resetElbowEncoder();
         }
 
         //Update armPosition
