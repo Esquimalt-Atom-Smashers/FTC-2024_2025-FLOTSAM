@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.commands.CommandManager;
 import org.firstinspires.ftc.teamcode.subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.WristSubsystem;
@@ -16,6 +17,8 @@ public class ClawIntakeTeleOp extends OpMode {
     ArmSubsystem armSubsystem;
     WristSubsystem wristSubsystem;
     DriveSubsystem driveSubsystem;
+
+    CommandManager commandManager;
 
     private boolean firstTime = true;
 
@@ -28,6 +31,7 @@ public class ClawIntakeTeleOp extends OpMode {
         wristSubsystem = new WristSubsystem(this);
         driveSubsystem = new DriveSubsystem(this);
 
+        commandManager = new CommandManager(armSubsystem, driveSubsystem, wristSubsystem);
         bindOperatorControls();
         bindDriverControls();
     }
@@ -38,21 +42,23 @@ public class ClawIntakeTeleOp extends OpMode {
 
         Trigger highPosition = new Trigger(() -> gamepad2.dpad_up);
         highPosition.whenActive(() -> {
-            wristSubsystem.setWristPosition(WristSubsystem.WristPosition.READY);
-            armSubsystem.getMoveArmToPositionCommand(ArmSubsystem.ArmPosition.HIGH_OUTTAKE_POSITION, 0.8, 0.5, 0.2).schedule();
+            commandManager.getToHighBasketPositionCommand();
         });
 
         Trigger intakePosition = new Trigger(() -> gamepad2.dpad_down);
         intakePosition.whenActive(() -> {
-            wristSubsystem.setWristPosition(WristSubsystem.WristPosition.READY);
-            armSubsystem.getMoveArmToPositionCommand(ArmSubsystem.ArmPosition.INTAKE_POSITION, 0.8, 0.5, 0.2).schedule();
+            commandManager.getToHomePosition();
         });
 
         Trigger lowPosition = new Trigger(() -> gamepad2.dpad_right);
         lowPosition.whenActive(() -> {
-            wristSubsystem.setWristPosition(WristSubsystem.WristPosition.READY);
-            armSubsystem.getMoveArmToPositionCommand(ArmSubsystem.ArmPosition.LOW_OUTTAKE_POSITION, 0.8, 0.5, 0.2).schedule();
+            commandManager.getToLowBasketPosition();
         });
+
+        Trigger lowPositionReady = new Trigger(() -> gamepad2.dpad_left);
+        lowPositionReady.whenActive(() ->
+                commandManager.getToHomePositionHorizontal()
+        );
 
         Trigger linearControl = new Trigger(() -> Math.abs(gamepad2.right_stick_y) > 0);
         linearControl.whileActiveContinuous(() -> armSubsystem.addToLinearSlideTarget((int) (gamepad2.right_stick_y * -30)));

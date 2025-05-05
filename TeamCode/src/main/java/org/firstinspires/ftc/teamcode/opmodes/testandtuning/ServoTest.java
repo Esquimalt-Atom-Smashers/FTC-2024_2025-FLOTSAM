@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Disabled
 @TeleOp(name="Servo Test", group="z. Test")
 public class ServoTest extends LinearOpMode {
 
@@ -22,8 +21,8 @@ public class ServoTest extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the hardware variables
-        servo = hardwareMap.get(Servo.class, "specElbow");
-        secServo = hardwareMap.get(Servo.class, "specClaw");
+        servo = hardwareMap.get(Servo.class, "sampElbow");
+        secServo = hardwareMap.get(Servo.class, "sampClaw");
 
         // Wait for the game to start
         waitForStart();
