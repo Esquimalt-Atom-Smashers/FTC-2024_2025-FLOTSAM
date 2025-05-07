@@ -21,7 +21,7 @@ public class ServoTest extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the hardware variables
-        servo = hardwareMap.get(Servo.class, "sampElbow");
+        servo = hardwareMap.get(Servo.class, "sampWrist");
         secServo = hardwareMap.get(Servo.class, "sampClaw");
 
         // Wait for the game to start

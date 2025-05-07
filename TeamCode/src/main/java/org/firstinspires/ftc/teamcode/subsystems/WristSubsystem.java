@@ -9,8 +9,8 @@ public class WristSubsystem extends SubsystemBase {
     //Constants
     public static final String WRIST_SERVO_NAME = "sampWrist";
     public static final String CLAW_SERVO_NAME = "sampClaw";
-    public static final double CLAW_OPEN_POSITION = 0.5;
-    public static final double CLAW_CLOSED_POSITION = 0.1;
+    public static final double CLAW_OPEN_POSITION = 1;
+    public static final double CLAW_CLOSED_POSITION = 0.15;
 
     //Hardware Components
     private final Servo wristServo;
@@ -18,10 +18,10 @@ public class WristSubsystem extends SubsystemBase {
 
     //Additional Properties
     public enum WristPosition {
-        COLLAPSED(0.84),
-        READY(0.15),
-        INTAKE(0.00),
-        OUTTAKE(0.67);
+        COLLAPSED(0),
+        READY(0.5),
+        INTAKE(0.62),
+        OUTTAKE(0.25);
 
         public final double position;
         WristPosition(double position) {

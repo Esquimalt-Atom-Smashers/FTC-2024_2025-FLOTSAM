@@ -35,15 +35,15 @@ public class ArmSubsystem extends SubsystemBase {
     public static double SLIDE_P = 0.008;
     public static double SLIDE_I = 0;
     public static double SLIDE_D = 0.00015;
-    public static final int SLIDE_MAX_POSITION = 1900; //(high bucket plus a buffer)
-    public static final int SLIDE_MAX_POSITION_DOWN = 1500;
-    public static final int WRIST_OUT_MAX_SLIDE_POSITION = 1370;
+    public static final int SLIDE_MAX_POSITION = 3000; //(high bucket plus a buffer)
+    public static final int SLIDE_MAX_POSITION_DOWN = 1200;
+    public static final int WRIST_OUT_MAX_SLIDE_POSITION = 1700;
 
     public static final int ELBOW_MAX_POSITION = 685;
     public static final int SLIDE_MIN_POSITION = 0;
     public static final int ELBOW_MIN_POSITION = 0;
     public static final int TICKS_PER_ELBOW_ROTATION = 2740;
-    public static final double POWER_TO_HOLD_ARM = 0.263; //0.263 with light intake
+    public static final double POWER_TO_HOLD_ARM = 0.1;
     public static final double POWER_TO_HOLD_SLIDE = 0.09; //previously 0.104
     public static final int TOLERANCE = 25;
 
@@ -75,8 +75,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     public enum ArmPosition {
         INTAKE_POSITION(0, 0),
-        HIGH_OUTTAKE_POSITION(685, 1867),
-        LOW_OUTTAKE_POSITION(685, 500); //Check positions
+        HIGH_OUTTAKE_POSITION(670, 2900),
+        LOW_OUTTAKE_POSITION(670, 900); //Check positions
 
         public final int elbowPos;
         public final int slidePos;
