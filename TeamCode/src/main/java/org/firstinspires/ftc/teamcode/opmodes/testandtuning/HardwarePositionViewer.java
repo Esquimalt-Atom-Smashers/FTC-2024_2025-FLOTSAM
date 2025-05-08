@@ -21,8 +21,8 @@ public class HardwarePositionViewer extends OpMode {
         wristServo = hardwareMap.get(Servo.class, "sampWrist");
         clawServo = hardwareMap.get(Servo.class, "sampClaw");
 
-        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        linearSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        linearSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         linearSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
