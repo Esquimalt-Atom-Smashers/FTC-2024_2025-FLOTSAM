@@ -32,8 +32,8 @@ public class ArmSubsystem extends SubsystemBase {
     public static double ELBOW_P = 0.00779;
     public static double ELBOW_I = 0.00021;
     public static double ELBOW_D = 0.00025;
-    public static double SLIDE_P = 0;
-    public static double SLIDE_I = 0;
+    public static double SLIDE_P = 0.00303;
+    public static double SLIDE_I = 0.00025;
     public static double SLIDE_D = 0;
     public static final int SLIDE_MAX_POSITION = 2800; //(high bucket plus a buffer)
     public static final int SLIDE_MAX_POSITION_DOWN = 2076;
