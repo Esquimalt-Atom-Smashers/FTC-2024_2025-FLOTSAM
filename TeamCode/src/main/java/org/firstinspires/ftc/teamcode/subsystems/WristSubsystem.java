@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -29,6 +30,8 @@ public class WristSubsystem extends SubsystemBase {
         }
     }
 
+    private WristPosition wristPosition = WristPosition.COLLAPSED;
+
     public enum ClawPosition {
         OPEN(CLAW_OPEN_POSITION),
         CLOSED(CLAW_CLOSED_POSITION);
@@ -48,16 +51,17 @@ public class WristSubsystem extends SubsystemBase {
 
     //Physical Operations
 
-    public void setWristPosition(double position) {
-        wristServo.setPosition(Range.clip(position, 0.0, 1.0));
-    }
-
-    public void setClawPosition(double position) {
-        clawServo.setPosition(Range.clip(position, 0.0, 1.0));
-    }
+//    public void setWristPosition(double position) {
+//        wristServo.setPosition(Range.clip(position, 0.0, 1.0));
+//    }
+//
+//    public void setClawPosition(double position) {
+//        clawServo.setPosition(Range.clip(position, 0.0, 1.0));
+//    }
 
     public void setWristPosition(WristPosition position) {
         wristServo.setPosition(position.position);
+        wristPosition = position;
     }
 
     public void closeClaw() {
@@ -83,11 +87,35 @@ public class WristSubsystem extends SubsystemBase {
 
     //Getters
 
-    public double getWristPosition() {
-        return wristServo.getPosition();
+    public WristPosition getWristPosition() {
+        return wristPosition;
     }
 
-    public double getClawPosition() {
-        return clawServo.getPosition();
+    public ClawPosition getClawPosition() {
+        return clawPosition;
+    }
+
+    //Commands
+
+    public static class MoveWristToPositionCommand extends CommandBase {
+        private final WristPosition position;
+        private final WristSubsystem wristSubsystem;
+
+        public MoveWristToPositionCommand(WristSubsystem wristSubsystem, WristPosition position) {
+            this.position = position;
+            this.wristSubsystem = wristSubsystem;
+
+            addRequirements(wristSubsystem);
+        }
+
+        @Override
+        public void initialize() {
+            wristSubsystem.setWristPosition(position);
+        }
+
+        @Override
+        public boolean isFinished() {
+            return wristSubsystem.getWristPosition() == position;
+        }
     }
 }

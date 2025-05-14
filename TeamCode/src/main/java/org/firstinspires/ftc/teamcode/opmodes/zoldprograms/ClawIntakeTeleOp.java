@@ -42,22 +42,22 @@ public class ClawIntakeTeleOp extends OpMode {
 
         Trigger highPosition = new Trigger(() -> gamepad2.dpad_up);
         highPosition.whenActive(() -> {
-            commandManager.getToHighBasketPositionCommand();
+            commandManager.getToHighBasketPositionCommand().schedule();
         });
 
         Trigger intakePosition = new Trigger(() -> gamepad2.dpad_down);
         intakePosition.whenActive(() -> {
-            commandManager.getToHomePosition();
+            commandManager.getToHomePosition().schedule();
         });
 
         Trigger lowPosition = new Trigger(() -> gamepad2.dpad_right);
         lowPosition.whenActive(() -> {
-            commandManager.getToLowBasketPosition();
+            commandManager.getToLowBasketPosition().schedule();
         });
 
-        Trigger lowPositionReady = new Trigger(() -> gamepad2.dpad_left);
+        Trigger lowPositionReady = new Trigger(() -> gamepad2.dpad_left && armSubsystem.getArmPosition() == ArmSubsystem.ArmPosition.INTAKE_POSITION);
         lowPositionReady.whenActive(() ->
-                commandManager.getToHomePositionHorizontal()
+                commandManager.getToHomePositionHorizontal().schedule()
         );
 
         Trigger linearControl = new Trigger(() -> Math.abs(gamepad2.right_stick_y) > 0);
@@ -82,7 +82,7 @@ public class ClawIntakeTeleOp extends OpMode {
     private void bindDriverControls() {
         driveSubsystem.setSpeedMultiplier(0.5);
 
-        RunCommand defaultDriveCommand = new RunCommand(() -> driveSubsystem.drive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x));
+        RunCommand defaultDriveCommand = new RunCommand(() -> driveSubsystem.drive(-gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x));
         defaultDriveCommand.addRequirements(driveSubsystem);
         driveSubsystem.setDefaultCommand(defaultDriveCommand);
 

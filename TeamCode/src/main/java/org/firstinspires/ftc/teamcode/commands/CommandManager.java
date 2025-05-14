@@ -30,7 +30,8 @@ public class CommandManager {
         if (Math.abs(armSubsystem.getElbowPosition() - position.elbowPos) <= ArmSubsystem.TOLERANCE) {
             return new SequentialCommandGroup(
                     new ArmSubsystem.ArmToPositionCommand(armSubsystem, position, maxLinearPower, previousElbowMaxPower),
-                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
+                    //new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
+                    new WristSubsystem.MoveWristToPositionCommand(wristSubsystem, WristSubsystem.WristPosition.OUTTAKE),
                     new RunCommand(() -> {
                         armSubsystem.setLinearMaxPower(previousLinearMaxPower);
                         armSubsystem.setElbowMaxPower(previousElbowMaxPower);
@@ -39,10 +40,12 @@ public class CommandManager {
         } else {
             return new SequentialCommandGroup(
                     new ArmSubsystem.SlideToPositionCommand(armSubsystem, ArmSubsystem.SLIDE_MIN_POSITION, maxLinearPower),
-                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.COLLAPSED)),
+                    //new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.COLLAPSED)),
+                    new WristSubsystem.MoveWristToPositionCommand(wristSubsystem, WristSubsystem.WristPosition.COLLAPSED),
                     new ArmSubsystem.ElbowToPositionCommand(armSubsystem, position.elbowPos, (position.elbowPos < armSubsystem.getElbowPosition()) ? maxElbowPowerGoingDown : maxElbowPowerGoingUp),
                     new ArmSubsystem.SlideToPositionCommand(armSubsystem, position.slidePos, maxLinearPower),
-                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
+                    //new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
+                    new WristSubsystem.MoveWristToPositionCommand(wristSubsystem, WristSubsystem.WristPosition.OUTTAKE),
                     new RunCommand(() -> {
                         armSubsystem.setLinearMaxPower(previousLinearMaxPower);
                         armSubsystem.setElbowMaxPower(previousElbowMaxPower);
@@ -62,7 +65,8 @@ public class CommandManager {
 
         if (Math.abs(armSubsystem.getElbowPosition() - position.elbowPos) <= ArmSubsystem.TOLERANCE) {
             return new SequentialCommandGroup(
-                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
+                    //new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
+                    new WristSubsystem.MoveWristToPositionCommand(wristSubsystem, WristSubsystem.WristPosition.OUTTAKE),
                     new ArmSubsystem.ArmToPositionCommand(armSubsystem, position, maxLinearPower, previousElbowMaxPower),
                     new RunCommand(() -> {
                         armSubsystem.setLinearMaxPower(previousLinearMaxPower);
@@ -72,9 +76,11 @@ public class CommandManager {
         } else {
             return new SequentialCommandGroup(
                     new ArmSubsystem.SlideToPositionCommand(armSubsystem, ArmSubsystem.SLIDE_MIN_POSITION, maxLinearPower),
-                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.INTAKE)),
+                    //new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.INTAKE)),
+                    new WristSubsystem.MoveWristToPositionCommand(wristSubsystem, WristSubsystem.WristPosition.INTAKE),
                     new ArmSubsystem.ElbowToPositionCommand(armSubsystem, position.elbowPos, (position.elbowPos < armSubsystem.getElbowPosition()) ? maxElbowPowerGoingDown : maxElbowPowerGoingUp),
-                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
+                    //new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
+                    new WristSubsystem.MoveWristToPositionCommand(wristSubsystem, WristSubsystem.WristPosition.OUTTAKE),
                     new ArmSubsystem.SlideToPositionCommand(armSubsystem, position.slidePos, maxLinearPower),
                     new RunCommand(() -> {
                         armSubsystem.setLinearMaxPower(previousLinearMaxPower);
@@ -95,7 +101,8 @@ public class CommandManager {
 
         if (Math.abs(armSubsystem.getElbowPosition() - position.elbowPos) <= ArmSubsystem.TOLERANCE) {
             return new SequentialCommandGroup(
-                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.COLLAPSED)),
+                    //new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.COLLAPSED)),
+                    new WristSubsystem.MoveWristToPositionCommand(wristSubsystem, WristSubsystem.WristPosition.COLLAPSED),
                     new ArmSubsystem.ArmToPositionCommand(armSubsystem, position, maxLinearPower, previousElbowMaxPower),
                     new RunCommand(() -> {
                         armSubsystem.setLinearMaxPower(previousLinearMaxPower);
@@ -104,9 +111,11 @@ public class CommandManager {
             );
         } else {
             return new SequentialCommandGroup(
-                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.READY)),
+                    //new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.READY)),
+                    new WristSubsystem.MoveWristToPositionCommand(wristSubsystem, WristSubsystem.WristPosition.READY),
                     new ArmSubsystem.SlideToPositionCommand(armSubsystem, position.slidePos, maxLinearPower),
-                    new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
+                    //new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.OUTTAKE)),
+                    new WristSubsystem.MoveWristToPositionCommand(wristSubsystem, WristSubsystem.WristPosition.OUTTAKE),
                     new ArmSubsystem.ElbowToPositionCommand(armSubsystem, position.elbowPos, (position.elbowPos < armSubsystem.getElbowPosition()) ? maxElbowPowerGoingDown : maxElbowPowerGoingUp),
                     new RunCommand(() -> {
                         armSubsystem.setLinearMaxPower(previousLinearMaxPower);
@@ -125,7 +134,8 @@ public class CommandManager {
         double previousElbowMaxPower = armSubsystem.getMaxElbowPower();
         double previousLinearMaxPower = armSubsystem.getMaxLinearPower();
         return new SequentialCommandGroup(
-                new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.READY)),
+                //new RunCommand(() -> wristSubsystem.setWristPosition(WristSubsystem.WristPosition.READY)),
+                new WristSubsystem.MoveWristToPositionCommand(wristSubsystem, WristSubsystem.WristPosition.READY),
                 new ArmSubsystem.ArmToPositionCommand(armSubsystem, position, maxLinearPower, previousElbowMaxPower),
                 new RunCommand(() -> {
                     armSubsystem.setLinearMaxPower(previousLinearMaxPower);
