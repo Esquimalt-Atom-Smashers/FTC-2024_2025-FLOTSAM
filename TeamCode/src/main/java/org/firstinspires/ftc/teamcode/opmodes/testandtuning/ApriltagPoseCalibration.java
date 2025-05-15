@@ -25,7 +25,7 @@ public class ApriltagPoseCalibration extends OpMode {
         telemetry.addData("LL cood: ", "X: %.3f, Y: %.3f, Heading: %.3f", limelightPose[0] * METER_TO_INCH, limelightPose[1] * METER_TO_INCH, limelightPose[2]);
 
         Pose2d LLpose2d = limelightSubsystem.lltoPose2d(limelightSubsystem.getRobotPoseOnField());
-        telemetry.addData("Cannot see Apriltag", LLpose2d.equals(limelightSubsystem.errorPose2d));
+        telemetry.addData("Cannot see Apriltag", LLpose2d.equals(limelightSubsystem.ERROR_POSE_2D));
         telemetry.update();
     }
 }

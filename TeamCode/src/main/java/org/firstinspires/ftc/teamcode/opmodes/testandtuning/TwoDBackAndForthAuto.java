@@ -30,7 +30,7 @@ public class TwoDBackAndForthAuto extends LinearOpMode {
         Pose2d beginPose = new Pose2d(0,48 , Math.toRadians(0));
         this.mecanumDrive = new MecanumDrive(hardwareMap, beginPose);
         this.limelightSubsystem = new LimelightSubsystem(this);
-        correctPose = limelightSubsystem.errorPose2d;
+        correctPose = limelightSubsystem.ERROR_POSE_2D;
 
         waitForStart();
         LLReactionTimer.reset();

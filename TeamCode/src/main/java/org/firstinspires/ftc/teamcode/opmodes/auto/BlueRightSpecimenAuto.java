@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
-import com.acmerobotics.roadrunner.Trajectory;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -27,8 +26,8 @@ public class BlueRightSpecimenAuto extends LinearOpMode {
         this.specimenArmSubsystem = new SpecimenArmSubsystem(this);
         this.limelightSubsystem = new LimelightSubsystem(this);
 
-        Pose2d firstCalibrationPose = limelightSubsystem.errorPose2d;
-        Pose2d secondCalibrationPose = limelightSubsystem.errorPose2d;
+        Pose2d firstCalibrationPose = limelightSubsystem.ERROR_POSE_2D;
+        Pose2d secondCalibrationPose = limelightSubsystem.ERROR_POSE_2D;
 
         waitForStart();
 
