@@ -47,7 +47,7 @@ public class SampleAiming extends LinearOpMode {
 //            } else if (gamepad1.b) {
 //                driveSubsystem.turnTo(redSampleHeading);
 //            } else
-            if (gamepad1.x) {
+            if (gamepad1.x && blueSampleHeading != limelightSubsystem.ERROR_SAMPLE_RESULT[0]) {
                 driveSubsystem.turnTo(blueSampleHeading);
             } else {
                 driveSubsystem.stopAll();
