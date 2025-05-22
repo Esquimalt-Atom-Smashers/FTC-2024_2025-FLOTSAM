@@ -24,7 +24,7 @@ public class SampleAiming extends LinearOpMode {
             } else {
                 telemetry.addData("blue sample heading:", blueSampleHeading);
             }
-//
+            telemetry.addData("is error", blueSampleHeading != limelightSubsystem.ERROR_SAMPLE_RESULT[0]);
 //            double[] redSampleLocation =  limelightSubsystem.getRedSample();
 //            double redSampleHeading = redSampleLocation[1];
 //            if (redSampleLocation == limelightSubsystem.ERROR_SAMPLE_RESULT) {

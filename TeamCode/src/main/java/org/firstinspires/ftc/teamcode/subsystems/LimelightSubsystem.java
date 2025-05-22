@@ -18,7 +18,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
     Limelight3A limelight;
     public double METER_TO_INCH = 39.37008;
-    public double[] ERROR_SAMPLE_RESULT = new double[] {10000, 10000};
+    public double[] ERROR_SAMPLE_RESULT = new double[] {-10000, 10000};
     public double[] ERROR_POSE_3D = new double[] {10000, 10000, 10000};
     public Pose2d ERROR_POSE_2D = new Pose2d(10000 * METER_TO_INCH, 10000 * METER_TO_INCH, Math.toRadians(10000));
 
