@@ -39,7 +39,7 @@ public class SwervePodTeleOp extends LinearOpMode {
             // Calculate target angle (0 to 360)
             double angle = Math.toDegrees(Math.atan2(x, y));
             telemetry.addData("Target Angle", "%.2f°", angle);
-            // angle = normalizeAngle(angle);
+             angle = angle - servoOrientation;
 
             double servoPos;
             double motorPower;
@@ -54,11 +54,8 @@ public class SwervePodTeleOp extends LinearOpMode {
                 servoPos = 0.5;
                 motorPower = 0;
             }
-
-
             // Apply outputs
             turnServo.setPosition(servoPos);
-
 //            driveMotor.setPower(power);
 
             // Telemetry
