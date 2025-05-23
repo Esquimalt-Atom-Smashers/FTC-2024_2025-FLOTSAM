@@ -15,8 +15,9 @@ public class SwervePodTeleOp extends LinearOpMode {
 
     private final double SERVO_MAX_DEGREES = 300.0;
     private final double MIDDLE_POS = 0.5;
+    private final double FORWARD_POS = 0.25;
 
-    private final double servoOrientation = 0.25 * SERVO_MAX_DEGREES;
+    private final double servoOrientation = FORWARD_POS * SERVO_MAX_DEGREES;
     @Override
     public void runOpMode() {
         // Initialize hardware
@@ -39,7 +40,7 @@ public class SwervePodTeleOp extends LinearOpMode {
             // Calculate target angle (0 to 360)
             double angle = Math.toDegrees(Math.atan2(x, y));
             telemetry.addData("Target Angle", "%.2f°", angle);
-             angle = angle - servoOrientation;
+            angle = angle - servoOrientation;
 
             double servoPos;
             double motorPower;
