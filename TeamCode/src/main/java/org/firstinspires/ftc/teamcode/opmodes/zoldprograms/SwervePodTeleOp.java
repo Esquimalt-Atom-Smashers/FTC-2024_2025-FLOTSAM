@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "Single Swerve Pod TeleOp", group = "Test")
 public class SwervePodTeleOp extends LinearOpMode {
@@ -12,10 +13,10 @@ public class SwervePodTeleOp extends LinearOpMode {
     private DcMotor driveMotor;
     private Servo turnServo;
 
-    // Servo parameters (for ~330° servo)
-    private final double SERVO_MIN_DEGREES = 0.0;
-    private final double SERVO_MAX_DEGREES = 330.0;
+    private final double SERVO_MAX_DEGREES = 300.0;
+    private final double MIDDLE_POS = 0.5;
 
+    private final double servoOrientation = 0.25 * SERVO_MAX_DEGREES;
     @Override
     public void runOpMode() {
         // Initialize hardware
@@ -23,6 +24,8 @@ public class SwervePodTeleOp extends LinearOpMode {
         turnServo = hardwareMap.get(Servo.class, "servo");
 
         driveMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        turnServo.setPosition(0.5);
+
 
         waitForStart();
 
@@ -34,34 +37,45 @@ public class SwervePodTeleOp extends LinearOpMode {
             if (power > 1.0) power = 1.0;
 
             // Calculate target angle (0 to 360)
-            double angle = Math.toDegrees(Math.atan2(y, x));
-            angle = normalizeAngle(angle);
+            double angle = Math.toDegrees(Math.atan2(x, y));
+            telemetry.addData("Target Angle", "%.2f°", angle);
+            // angle = normalizeAngle(angle);
 
-            // Convert to servo position (0.0 to 1.0)
-            double servoPos = angleToServoPosition(angle);
+            double servoPos;
+            double motorPower;
+
+            if (power != 0) {
+                double[] swerveVector = swerveVector(angle, power);
+                servoPos = swerveVector[0];
+                motorPower = swerveVector[1];
+//                servoPos = angle/SERVO_MAX_DEGREES + 0.5;
+//                motorPower = power;
+            } else {
+                servoPos = 0.5;
+                motorPower = 0;
+            }
+
 
             // Apply outputs
             turnServo.setPosition(servoPos);
-            driveMotor.setPower(power);
+
+//            driveMotor.setPower(power);
 
             // Telemetry
             telemetry.addData("Joystick X/Y", "%.2f / %.2f", x, y);
-            telemetry.addData("Target Angle", "%.2f°", angle);
             telemetry.addData("Servo Position", "%.2f", servoPos);
-            telemetry.addData("Motor Power", "%.2f", power);
+            telemetry.addData("Motor Power", "%.2f", motorPower);
             telemetry.update();
         }
     }
 
-    private double normalizeAngle(double angle) {
-        angle %= 360;
-        if (angle < 0) angle += 360;
-        return angle;
-    }
-
-    private double angleToServoPosition(double angleDegrees) {
-        // Clamp to max physical range
-        angleDegrees = Math.max(SERVO_MIN_DEGREES, Math.min(angleDegrees, SERVO_MAX_DEGREES));
-        return angleDegrees / SERVO_MAX_DEGREES;
+    private double[] swerveVector(double angleDegrees, double power) {
+        double servoPos = angleDegrees / SERVO_MAX_DEGREES + MIDDLE_POS;
+        if (servoPos < MIDDLE_POS + (90 / SERVO_MAX_DEGREES) && servoPos > MIDDLE_POS - (90 / SERVO_MAX_DEGREES)) {
+            return new double[] {servoPos, power};
+        } else {
+            servoPos = angleDegrees > 0 ? ((angleDegrees - 180) / SERVO_MAX_DEGREES) + MIDDLE_POS : ((angleDegrees + 180) / SERVO_MAX_DEGREES) + MIDDLE_POS;
+            return new double[] {servoPos, -power};
+        }
     }
 }
