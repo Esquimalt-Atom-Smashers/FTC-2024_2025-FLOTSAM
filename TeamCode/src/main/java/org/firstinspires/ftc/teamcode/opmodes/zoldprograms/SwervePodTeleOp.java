@@ -15,7 +15,7 @@ public class SwervePodTeleOp extends LinearOpMode {
 
     private final double SERVO_MAX_DEGREES = 300.0;
     private final double MIDDLE_POS = 0.5;
-    private final double FORWARD_POS = 0.25;
+    private final double FORWARD_POS = 0.29;
 
     private final double servoOrientation = FORWARD_POS * SERVO_MAX_DEGREES;
     @Override
@@ -34,7 +34,8 @@ public class SwervePodTeleOp extends LinearOpMode {
             // Get joystick input
             double x = gamepad1.left_stick_x;
             double y = -gamepad1.left_stick_y; // Invert Y axis for forward
-            double power = Math.hypot(x, y);
+            double a = gamepad1.right_stick_x;
+            double power = Math.hypot(x, y) + Math.abs(a);
             if (power > 1.0) power = 1.0;
 
             // Calculate target angle (0 to 360)
@@ -47,7 +48,7 @@ public class SwervePodTeleOp extends LinearOpMode {
 
             if (power != 0) {
                 double[] swerveVector = swerveVector(angle, power);
-                servoPos = swerveVector[0];
+                servoPos = swerveVector[0] + turnAngle(a) / SERVO_MAX_DEGREES;
                 motorPower = swerveVector[1];
 //                servoPos = angle/SERVO_MAX_DEGREES + 0.5;
 //                motorPower = power;
@@ -75,5 +76,10 @@ public class SwervePodTeleOp extends LinearOpMode {
             servoPos = angleDegrees > 0 ? ((angleDegrees - 180) / SERVO_MAX_DEGREES) + MIDDLE_POS : ((angleDegrees + 180) / SERVO_MAX_DEGREES) + MIDDLE_POS;
             return new double[] {servoPos, -power};
         }
+    }
+
+    private double turnAngle(double a) {
+        if (a > 0) return 90;
+        else return -90;
     }
 }
