@@ -47,8 +47,8 @@ public class SwervePodTeleOp extends LinearOpMode {
             double motorPower;
 
             if (power != 0) {
-                double[] swerveVector = swerveVector(angle, power);
-                servoPos = swerveVector[0] + turnAngle(a) / SERVO_MAX_DEGREES;
+                double[] swerveVector = swerveVector(angle + turnAngle(a), power);
+                servoPos = swerveVector[0] / SERVO_MAX_DEGREES;
                 motorPower = swerveVector[1];
 //                servoPos = angle/SERVO_MAX_DEGREES + 0.5;
 //                motorPower = power;
@@ -79,6 +79,7 @@ public class SwervePodTeleOp extends LinearOpMode {
     }
 
     private double turnAngle(double a) {
+        if (a == 0) return 0;
         if (a > 0) return 90;
         else return -90;
     }
