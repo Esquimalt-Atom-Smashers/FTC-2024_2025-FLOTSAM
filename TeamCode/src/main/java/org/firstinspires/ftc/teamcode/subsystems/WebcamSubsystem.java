@@ -54,7 +54,7 @@ public class WebcamSubsystem extends SubsystemBase {
         {
             if (b.getContourArea() == largestBlobArea) {
                 RotatedRect boxFit = b.getBoxFit();
-                sampleHeading = boxFit.center.x / WEBCAM_POV_WIDTH * WEBCAM_FIELD_ANGLE - (WEBCAM_POV_WIDTH / 2);
+                sampleHeading = boxFit.center.x / WEBCAM_POV_WIDTH * WEBCAM_FIELD_ANGLE - (WEBCAM_FIELD_ANGLE / 2);
             }
         }
         return sampleHeading;
