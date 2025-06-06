@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.opencv.ColorBlobLocatorProcessor;
 import org.firstinspires.ftc.vision.opencv.ColorRange;
@@ -16,11 +17,12 @@ import org.opencv.core.RotatedRect;
 import java.util.List;
 
 @TeleOp(name = "WebcamDetectColour", group = "zoldprograms")
-public class WebcamColourOpMode extends LinearOpMode
+public class WebcamColourOpMode  extends LinearOpMode
 {
     @Override
     public void runOpMode()
     {
+        LimelightSubsystem limelightSubsystem = new LimelightSubsystem(this);
         ColorBlobLocatorProcessor colorLocator = new ColorBlobLocatorProcessor.Builder()
                 .setTargetColorRange(ColorRange.BLUE)         // use a predefined color match
                 .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)    // exclude blobs inside blobs
@@ -52,9 +54,15 @@ public class WebcamColourOpMode extends LinearOpMode
                 double degree = boxFit.center.x / 318 * 68.5 - (68.5 / 2);
                 telemetry.addLine(String.format("%5d  %4.2f   %5.2f  (%3d,%3d)",
                         b.getContourArea(), b.getDensity(), b.getAspectRatio(), (int) boxFit.center.x, (int) boxFit.center.y));
-                telemetry.addData("degree", degree);
+                telemetry.addData("Webcam degree", degree);
             }
 
+            double[] sampleRes = limelightSubsystem.getBlueSample();
+            if (sampleRes != limelightSubsystem.ERROR_SAMPLE_RESULT) {
+                telemetry.addData("LL degree", sampleRes[0]);
+            } else {
+                telemetry.addLine("LL degree not found");
+            }
             telemetry.update();
             sleep(50);
         }
