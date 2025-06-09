@@ -42,21 +42,26 @@ public class WebcamSubsystem extends SubsystemBase {
 
     public double getBlueSample() {
         List<ColorBlobLocatorProcessor.Blob> blobs = colorLocator.getBlobs();
-        ColorBlobLocatorProcessor.Util.filterByArea(50, 20000, blobs);  // filter out very small blobs.
+        ColorBlobLocatorProcessor.Util.filterByArea(50, 20000, blobs);
 
-        double sampleHeading = 0;
-        double largestBlobArea = 0;
-        for(ColorBlobLocatorProcessor.Blob b : blobs)
-        {
-            if (b.getContourArea() >= largestBlobArea)largestBlobArea = b.getContourArea();
-        }
-        for(ColorBlobLocatorProcessor.Blob b : blobs)
-        {
-            if (b.getContourArea() == largestBlobArea) {
-                RotatedRect boxFit = b.getBoxFit();
-                sampleHeading = boxFit.center.x / WEBCAM_POV_WIDTH * WEBCAM_FIELD_ANGLE - (WEBCAM_FIELD_ANGLE / 2);
+        if (blobs.isEmpty()) return Double.NaN;
+
+        ColorBlobLocatorProcessor.Blob largestBlob = null;
+        double largestArea = 0;
+
+        for (ColorBlobLocatorProcessor.Blob blob : blobs) {
+            double area = blob.getContourArea();
+            if (area > largestArea) {
+                largestArea = area;
+                largestBlob = blob;
             }
         }
-        return sampleHeading;
+
+        if (largestBlob == null) return Double.NaN;
+
+        RotatedRect boxFit = largestBlob.getBoxFit();
+        double x = boxFit.center.x;
+        return (x / WEBCAM_POV_WIDTH) * WEBCAM_FIELD_ANGLE - (WEBCAM_FIELD_ANGLE / 2);
     }
+
 }
