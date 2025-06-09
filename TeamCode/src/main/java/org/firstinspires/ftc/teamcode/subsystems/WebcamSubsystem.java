@@ -20,7 +20,7 @@ public class WebcamSubsystem extends SubsystemBase {
     private HardwareMap hardwareMap;
     private ColorBlobLocatorProcessor colorLocator;
     private VisionPortal portal;
-    private final double WEBCAM_FIELD_ANGLE = 68.5;
+    private final double WEBCAM_FIELD_ANGLE = 66;
     private final double WEBCAM_POV_WIDTH = 320;
     public WebcamSubsystem(OpMode opMode) {
         this.opMode = opMode;
