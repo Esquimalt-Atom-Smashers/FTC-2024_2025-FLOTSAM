@@ -55,6 +55,7 @@ public class WebcamColourOpMode  extends LinearOpMode
                 telemetry.addLine(String.format("%5d  %4.2f   %5.2f  (%3d,%3d)",
                         b.getContourArea(), b.getDensity(), b.getAspectRatio(), (int) boxFit.center.x, (int) boxFit.center.y));
                 telemetry.addData("Webcam degree", degree);
+                telemetry.addData("b angle", boxFit.angle);
             }
 
             double[] sampleRes = limelightSubsystem.getBlueSample();
