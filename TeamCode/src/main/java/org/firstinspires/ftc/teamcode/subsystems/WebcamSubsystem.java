@@ -28,7 +28,7 @@ public class WebcamSubsystem extends SubsystemBase {
          colorLocator = new ColorBlobLocatorProcessor.Builder()
                 .setTargetColorRange(ColorRange.BLUE)         // use a predefined color match
                 .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)    // exclude blobs inside blobs
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-1, 1, 1, 0))  // search central 1/4 of camera view
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-1, 1, 1, -0.15))
                 .setDrawContours(true)                        // Show contours on the Stream Preview
                 .setBlurSize(5)                               // Smooth the transitions between different colors in image
                 .build();
@@ -63,5 +63,5 @@ public class WebcamSubsystem extends SubsystemBase {
         double x = boxFit.center.x;
         return (x / WEBCAM_POV_WIDTH) * WEBCAM_FIELD_ANGLE - (WEBCAM_FIELD_ANGLE / 2);
     }
-
 }
+
