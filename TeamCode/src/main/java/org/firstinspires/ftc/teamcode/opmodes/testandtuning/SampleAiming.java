@@ -5,15 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.WebcamSubsystem;
 
 @TeleOp(name="SampleAiming", group="Robot")
 public class SampleAiming extends LinearOpMode {
     DriveSubsystem driveSubsystem;
     LimelightSubsystem limelightSubsystem;
+    WebcamSubsystem webcamSubsystem;
     @Override
     public void runOpMode() throws InterruptedException {
         driveSubsystem = new DriveSubsystem(this);
         limelightSubsystem = new LimelightSubsystem(this);
+        webcamSubsystem = new WebcamSubsystem(this);
 
         waitForStart();
         while (opModeIsActive()){
@@ -25,31 +28,17 @@ public class SampleAiming extends LinearOpMode {
                 telemetry.addData("blue sample heading:", blueSampleHeading);
             }
             telemetry.addData("is error", blueSampleHeading != limelightSubsystem.ERROR_SAMPLE_RESULT[0]);
-//            double[] redSampleLocation =  limelightSubsystem.getRedSample();
-//            double redSampleHeading = redSampleLocation[1];
-//            if (redSampleLocation == limelightSubsystem.ERROR_SAMPLE_RESULT) {
-//                telemetry.addData("red sample heading:", "not found");
-//            } else {
-//                telemetry.addData("red sample heading:", redSampleHeading);
-//            }
-//
-//            double[] yellowSampleLocation =  limelightSubsystem.getYellowSample();
-//            double yellowSampleHeading = yellowSampleLocation[1];
-//            if (yellowSampleLocation == limelightSubsystem.ERROR_SAMPLE_RESULT) {
-//                telemetry.addData("red sample heading:", "not found");
-//            } else {
-//                telemetry.addData("red sample heading:", yellowSampleHeading);
-//            }
+
+            double webcamHeading = webcamSubsystem.getBlueSample();
+            telemetry.addData("webcam heading", webcamHeading);
             telemetry.update();
 
-//            if (gamepad1.y) {
-//                driveSubsystem.turnTo(yellowSampleHeading);
-//            } else if (gamepad1.b) {
-//                driveSubsystem.turnTo(redSampleHeading);
-//            } else
             if (gamepad1.x && blueSampleHeading != limelightSubsystem.ERROR_SAMPLE_RESULT[0]) {
                 driveSubsystem.turnTo(blueSampleHeading);
-            } else {
+            } else if (gamepad1.y && Double.isNaN(webcamHeading)) {
+                driveSubsystem.turnTo(webcamHeading);
+            }
+            else {
                 driveSubsystem.stopAll();
             }
         }
