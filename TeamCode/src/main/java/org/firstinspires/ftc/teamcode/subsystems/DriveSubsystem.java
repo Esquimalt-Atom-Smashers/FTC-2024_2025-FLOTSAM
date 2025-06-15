@@ -283,6 +283,6 @@ public class DriveSubsystem extends SubsystemBase {
             return !(Math.abs(mecanumDrive.pose.position.x) <= TOLERANCE && Math.abs(mecanumDrive.pose.position.y) <= TOLERANCE && Math.toDegrees(Math.abs(mecanumDrive.pose.heading.real)) <= TOLERANCE);
         }
     }
-    public Action ToBasket(DriveSubsystem driveSubsystem) {return new ToBasket();}
+    public Action toBasket() {return new ToBasket();}
 
 }
