@@ -12,12 +12,13 @@ import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
-
+@Disabled
 @Autonomous(name = "Test:Back & forth Auto", group = "Push Auto")
 public class BackAndForthAuto extends LinearOpMode {
     private MecanumDrive mecanumDrive;

@@ -2,12 +2,13 @@ package org.firstinspires.ftc.teamcode.opmodes.testandtuning;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
-
+@Disabled
 @TeleOp
 public class ApriltagPoseCalibration extends OpMode {
     MecanumDrive mecanumDrive;
