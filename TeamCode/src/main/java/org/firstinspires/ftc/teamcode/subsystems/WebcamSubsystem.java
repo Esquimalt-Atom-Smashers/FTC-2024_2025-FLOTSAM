@@ -40,11 +40,11 @@ public class WebcamSubsystem extends SubsystemBase {
                 .build();
     }
 
-    public double getBlueSample() {
+    public double[] getBlueSample() {
         List<ColorBlobLocatorProcessor.Blob> blobs = colorLocator.getBlobs();
         ColorBlobLocatorProcessor.Util.filterByArea(50, 20000, blobs);
 
-        if (blobs.isEmpty()) return Double.NaN;
+        if (blobs.isEmpty()) return new double[]{Double.NaN, Double.NaN};
 
         ColorBlobLocatorProcessor.Blob largestBlob = null;
         double largestArea = 0;
@@ -57,11 +57,13 @@ public class WebcamSubsystem extends SubsystemBase {
             }
         }
 
-        if (largestBlob == null) return Double.NaN;
+        if (largestBlob == null) return new double[]{Double.NaN, Double.NaN};
 
         RotatedRect boxFit = largestBlob.getBoxFit();
         double x = boxFit.center.x;
-        return (x / WEBCAM_POV_WIDTH) * WEBCAM_FIELD_ANGLE - (WEBCAM_FIELD_ANGLE / 2);
+        double distance = 4 * Math.tan(Math.toRadians((boxFit.center.y + 292) / 286.5));
+
+        return new double[]{(x / WEBCAM_POV_WIDTH) * WEBCAM_FIELD_ANGLE - (WEBCAM_FIELD_ANGLE / 2), distance};
     }
 }
 

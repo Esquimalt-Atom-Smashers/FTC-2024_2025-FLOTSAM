@@ -56,19 +56,6 @@ public class GoToAprilTagAuto extends LinearOpMode {
         }
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-//            double[] limelightPose = limelightSubsystem.getRobotPoseOnField();
-//            double LLX = limelightPose[0] * limelightSubsystem.METER_TO_INCH;
-//            double LLY = limelightPose[1] * limelightSubsystem.METER_TO_INCH;
-//            if (LLX != 10000 && LLY != 10000) {
-//                mecanumDrive = new MecanumDrive(hardwareMap, new Pose2d(LLX, LLY, Math.toRadians(limelightPose[2])));
-//                mecanumDrive.actionBuilder(new Pose2d(LLX, LLY, Math.toRadians(limelightPose[2])))
-//                        .strafeToConstantHeading(target)
-//                        .build();
-//                telemetry.addLine("done mechanium");
-//                return false;
-//            } else {
-//                return true;
-//            }
             mecanumDrive = new MecanumDrive(hardwareMap, new Pose2d(0, 24, Math.toRadians(270)));
             mecanumDrive.actionBuilder( new Pose2d(0, 24, Math.toRadians(270)))
                         .strafeToConstantHeading(target)
