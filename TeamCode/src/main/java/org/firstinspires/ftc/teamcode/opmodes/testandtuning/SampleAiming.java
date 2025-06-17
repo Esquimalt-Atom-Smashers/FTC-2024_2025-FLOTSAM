@@ -34,6 +34,8 @@ public class SampleAiming extends LinearOpMode {
             double blueSampleDistance = blueSample[1];
             telemetry.addData("webcam heading", webcamHeading);
             telemetry.addData("sample distance", blueSampleDistance);
+            telemetry.addData("sample x pixel", blueSample[2]);
+            telemetry.addData("sample y pixel", blueSample[3]);
             telemetry.update();
 
             if (gamepad1.x && blueSampleHeading != limelightSubsystem.ERROR_SAMPLE_RESULT[0]) {

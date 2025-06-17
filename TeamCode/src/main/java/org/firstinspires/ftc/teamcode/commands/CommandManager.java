@@ -137,8 +137,4 @@ public class CommandManager {
                 })
         );
     }
-
-    public SequentialCommandGroup drivebaseToBasket() {
-        return new SequentialCommandGroup(new DriveSubsystem.ActionCommand(driveSubsystem.ToBasket(driveSubsystem), driveSubsystem));
-    }
 }

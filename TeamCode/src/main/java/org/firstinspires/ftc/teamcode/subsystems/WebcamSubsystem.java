@@ -61,9 +61,9 @@ public class WebcamSubsystem extends SubsystemBase {
 
         RotatedRect boxFit = largestBlob.getBoxFit();
         double x = boxFit.center.x;
-        double distance = 4 * Math.tan(Math.toRadians((boxFit.center.y + 292) / 286.5));
+        double distance = 4 * Math.tan(((boxFit.center.y + 292) / 5) * (Math.PI / 180));
 
-        return new double[]{(x / WEBCAM_POV_WIDTH) * WEBCAM_FIELD_ANGLE - (WEBCAM_FIELD_ANGLE / 2), distance};
+        return new double[]{(x / WEBCAM_POV_WIDTH) * WEBCAM_FIELD_ANGLE - (WEBCAM_FIELD_ANGLE / 2), distance, x, boxFit.center.y};
     }
 }
 
