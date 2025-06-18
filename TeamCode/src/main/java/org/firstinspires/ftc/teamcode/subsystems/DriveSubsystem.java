@@ -236,6 +236,9 @@ public class DriveSubsystem extends SubsystemBase {
         return mecanumDrive;
     }
 
+    public Pose2d getCurrentPos() {
+        return currentPos;
+    }
     //Periodic
 
     @Override
