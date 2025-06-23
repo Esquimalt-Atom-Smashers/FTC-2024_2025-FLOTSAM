@@ -239,6 +239,8 @@ public class DriveSubsystem extends SubsystemBase {
     public Pose2d getCurrentPos() {
         return currentPos;
     }
+
+    public boolean atPose() {return (Math.abs(mecanumDrive.pose.position.x) <= TOLERANCE && Math.abs(mecanumDrive.pose.position.y) <= TOLERANCE && Math.toDegrees(Math.abs(mecanumDrive.pose.heading.real)) <= TOLERANCE);}
     //Periodic
 
     @Override
@@ -275,17 +277,9 @@ public class DriveSubsystem extends SubsystemBase {
             return finished;
         }
     }
-
-    public class ToBasket implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            mecanumDrive.actionBuilder(currentPos).
-                    strafeToLinearHeading(new Vector2d(0, 0), Math.toRadians(0))
-                    .build();
-            mecanumDrive.updatePoseEstimate();
-            return !(Math.abs(mecanumDrive.pose.position.x) <= TOLERANCE && Math.abs(mecanumDrive.pose.position.y) <= TOLERANCE && Math.toDegrees(Math.abs(mecanumDrive.pose.heading.real)) <= TOLERANCE);
-        }
-    }
-    public Action toBasket() {return new ToBasket();}
+    
+    public Action toBasket() {return mecanumDrive.actionBuilder(currentPos).
+            strafeToLinearHeading(new Vector2d(0, 0), Math.toRadians(0))
+            .build();}
 
 }

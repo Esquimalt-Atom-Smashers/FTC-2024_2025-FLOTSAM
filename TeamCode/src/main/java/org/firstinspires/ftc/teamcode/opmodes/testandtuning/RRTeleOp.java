@@ -32,9 +32,12 @@ public class RRTeleOp extends OpMode {
 
         // updated based on gamepads
         if (gamepad1.a) {
-            runningActions.add(driveSubsystem.toBasket());
+            if (runningActions.isEmpty()) {
+                runningActions.add(driveSubsystem.toBasket());
+            }
         } else {
             driveSubsystem.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            runningActions.clear();
         }
 
         // update running actions
@@ -48,5 +51,11 @@ public class RRTeleOp extends OpMode {
         runningActions = newActions;
         driveSubsystem.periodic();
         dash.sendTelemetryPacket(packet);
+        Pose2d currentPos = driveSubsystem.getCurrentPos();
+        telemetry.addData("x", currentPos.position.x);
+        telemetry.addData("y", currentPos.position.y);
+        telemetry.addData("heading", currentPos.heading.real);
+        telemetry.addData("at pose",driveSubsystem.atPose());
+        telemetry.addData("running actions", runningActions);
     }
 }
