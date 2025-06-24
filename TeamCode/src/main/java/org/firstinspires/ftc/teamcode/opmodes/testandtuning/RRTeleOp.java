@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
@@ -20,10 +21,13 @@ public class RRTeleOp extends OpMode {
     private List<Action> runningActions = new ArrayList<>();
 
     private DriveSubsystem driveSubsystem;
+    private ElapsedTime timer;
+    private boolean pathCalled = false;
 
     @Override
     public void init() {
         this.driveSubsystem = new DriveSubsystem(this);
+        timer = new ElapsedTime();
     }
 
     @Override
@@ -34,11 +38,15 @@ public class RRTeleOp extends OpMode {
         if (gamepad1.a) {
             if (runningActions.isEmpty()) {
                 runningActions.add(driveSubsystem.toBasket());
+                timer.reset();
+                pathCalled = true;
             }
-        } else {
+        } else if (timer.seconds() >= 3 || !pathCalled) {
             driveSubsystem.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
             runningActions.clear();
+            pathCalled = false;
         }
+        //does not help
 
         // update running actions
         List<Action> newActions = new ArrayList<>();
@@ -54,8 +62,9 @@ public class RRTeleOp extends OpMode {
         Pose2d currentPos = driveSubsystem.getCurrentPos();
         telemetry.addData("x", currentPos.position.x);
         telemetry.addData("y", currentPos.position.y);
-        telemetry.addData("heading", currentPos.heading.real);
-        telemetry.addData("at pose",driveSubsystem.atPose());
+        telemetry.addData("heading real", currentPos.heading.real);
+        telemetry.addData("heading imag", currentPos.heading.imag);
         telemetry.addData("running actions", runningActions);
+        telemetry.addData("timer", timer.seconds());
     }
 }

@@ -10,6 +10,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -240,7 +241,7 @@ public class DriveSubsystem extends SubsystemBase {
         return currentPos;
     }
 
-    public boolean atPose() {return (Math.abs(mecanumDrive.pose.position.x) <= TOLERANCE && Math.abs(mecanumDrive.pose.position.y) <= TOLERANCE && Math.toDegrees(Math.abs(mecanumDrive.pose.heading.real)) <= TOLERANCE);}
+    public boolean atPose() {return (Math.abs(mecanumDrive.pose.position.x) <= TOLERANCE && Math.abs(mecanumDrive.pose.position.y) <= TOLERANCE && Math.toDegrees(Math.abs(mecanumDrive.pose.heading.real)) <= 15);}
     //Periodic
 
     @Override
@@ -248,7 +249,7 @@ public class DriveSubsystem extends SubsystemBase {
         telemetry.addData("fieldCentric", fieldCentric);
         telemetry.addData("IMU", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         mecanumDrive.updatePoseEstimate();
-        currentPos = new Pose2d(mecanumDrive.pose.position.x, mecanumDrive.pose.position.y, mecanumDrive.pose.heading.real);
+        currentPos = new Pose2d(new Vector2d(mecanumDrive.pose.position.x, mecanumDrive.pose.position.y), new Rotation2d(mecanumDrive.pose.heading.real, mecanumDrive.pose.heading.imag));
     }
 
     //RR action wrapper
@@ -277,9 +278,20 @@ public class DriveSubsystem extends SubsystemBase {
             return finished;
         }
     }
+
+    public class ToBasket implements Action{
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            if(Math.abs(currentPos.position.x) <= TOLERANCE && Math.abs(currentPos.position.y) <= TOLERANCE && Math.abs(currentPos.heading.real) <= TOLERANCE && Math.abs(currentPos.heading.imag) <= TOLERANCE) {
+                return false;
+            } else {
+                return mecanumDrive.actionBuilder(currentPos).
+                        strafeToLinearHeading(new Vector2d(0, 0), Math.toRadians(0))
+                        .build().run(telemetryPacket);
+            }
+        }
+    }
     
-    public Action toBasket() {return mecanumDrive.actionBuilder(currentPos).
-            strafeToLinearHeading(new Vector2d(0, 0), Math.toRadians(0))
-            .build();}
+    public Action toBasket() {return new ToBasket();}
 
 }
